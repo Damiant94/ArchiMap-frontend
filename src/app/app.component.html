@@ -6,12 +6,21 @@
     <div class="filters">
       <app-filters />
     </div>
-    <div class="objects-list">
+    <div class="objects-list" #objectsList>
       <app-objects-list />
     </div>
     <div class="map">
       <app-map />
     </div>
+    <button class="toggle" (click)="onToggle()">
+      @if (displayList) {
+        <mat-icon fontIcon="public"></mat-icon>
+        <p>Map</p>
+      } @else {
+        <mat-icon fontIcon="list"></mat-icon>
+        <p>List</p>
+      }
+    </button>
   </main>
   <footer class="footer">
     <app-footer />
