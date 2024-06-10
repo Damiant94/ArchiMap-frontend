@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ObjectsListElementComponent } from './objects-list-element/objects-list-element.component';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { ObjectData } from '../_models/objectData';
@@ -16,7 +16,11 @@ export class ObjectsListComponent {
   objects: ObjectData[] = [];
 
   ngOnInit() {
-    this.objects = this.objectsService.getObjects;
-    console.log(this.objects)
+    this.objects = this.objectsService.getFilteredObjects();
+    this.objectsService.objectsFilteredSubject.subscribe(
+      (objects: ObjectData[]) => {
+        this.objects = objects;
+      }
+    );
   }
 }

@@ -1,5 +1,5 @@
 <div class="container">
-    @for (object of objects; track object; let last = $last) {
-        <app-objects-list-element [objectData]='object' [isLast]='last'/>
-    }
+  @for (object of objects; track object.id) {
+    <app-objects-list-element [objectData]="object" />
+  }
 </div>

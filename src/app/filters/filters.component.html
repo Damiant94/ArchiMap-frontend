@@ -1,1 +1,40 @@
-<p>filters works!</p>
+<div class="container">
+  <div class="search-input">
+    <label for="search">Search</label>
+    <input
+      type="text"
+      name="search"
+      id="search"
+      [(ngModel)]="searchInput"
+      (input)="onFilterChange()"
+    />
+  </div>
+  <div class="selects">
+    <div class="type-select">
+      <select
+        name="type"
+        id="type"
+        [(ngModel)]="typeSelect"
+        (change)="onFilterChange()"
+      >
+        <option value="">Any</option>
+        <option value="MONUMENT">Monument</option>
+        <option value="APARTMENT">Apartment</option>
+        <option value="CATHEDRAL">Cathedral</option>
+      </select>
+    </div>
+    <div class="country-select">
+      <select
+        name="country"
+        id="country"
+        [(ngModel)]="countrySelect"
+        (change)="onFilterChange()"
+      >
+        <option value="">Any</option>
+        <option value="Poland">Poland</option>
+        <option value="France">France</option>
+        <option value="Italy">Italy</option>
+      </select>
+    </div>
+  </div>
+</div>
