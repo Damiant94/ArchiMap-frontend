@@ -33,6 +33,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/cyan-orange.css",
+              "node_modules/ol/ol.css",
               "src/styles.scss"
             ],
             "scripts": []
