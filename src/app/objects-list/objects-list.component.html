@@ -1,1 +1,5 @@
-<p>objects-list works!</p>
+<div class="container">
+    @for (object of objects; track object; let last = $last) {
+        <app-objects-list-element [objectData]='object' [isLast]='last'/>
+    }
+</div>

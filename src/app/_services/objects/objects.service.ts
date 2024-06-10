@@ -37,7 +37,22 @@ export const mockObjects = [
   },
   {
       id: '1',
-      name: 'Eiffel Tower',
+      name: 'Palac Kultury I Nauki',
+      description: 'Desc',
+      location: {
+        coordinates: [1,2],
+        country: 'Poland',
+        city: 'Warsaw'
+      },
+      category: ObjectCategory.MONUMENT,
+      userData: {
+        userId: '2',
+        userName: 'SuperAwesomeUser'
+      }
+  },
+  {
+      id: '1',
+      name: 'Krzywa Wieza',
       description: 'Desc',
       location: {
         coordinates: [1,2],
@@ -52,7 +67,7 @@ export const mockObjects = [
   },
   {
       id: '1',
-      name: 'Eiffel Tower',
+      name: 'Luk Tryumfalny',
       description: 'Desc',
       location: {
         coordinates: [1,2],
@@ -67,27 +82,12 @@ export const mockObjects = [
   },
   {
       id: '1',
-      name: 'Eiffel Tower',
+      name: 'Sky Tower',
       description: 'Desc',
       location: {
         coordinates: [1,2],
-        country: 'France',
-        city: 'Paris'
-      },
-      category: ObjectCategory.MONUMENT,
-      userData: {
-        userId: '2',
-        userName: 'SuperAwesomeUser'
-      }
-  },
-  {
-      id: '1',
-      name: 'Eiffel Tower',
-      description: 'Desc',
-      location: {
-        coordinates: [1,2],
-        country: 'France',
-        city: 'Paris'
+        country: 'Poland',
+        city: 'Wroclaw'
       },
       category: ObjectCategory.MONUMENT,
       userData: {

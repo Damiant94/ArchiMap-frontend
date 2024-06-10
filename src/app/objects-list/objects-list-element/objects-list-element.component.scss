@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  height: 150px;
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid black;
+
+  .content {
+    margin: auto;
+    width: 100%;
+    padding: 20px;
+
+    .name {
+      font-weight: bold;
+      font-size: 0.8rem;
+      line-height: 1rem;
+    }
+
+    .location {
+      font-size: 0.8rem;
+      line-height: 1rem;
+    }
+  }
+
+  .image {
+    height: 100%;
+    padding: 20px 0;
+
+    img {
+      border-radius: 20px;
+      max-height: 100%;
+      width: auto;
+    }
+  }
+}
+
+@media (min-width: 700px) {
+  .container {
+    height: 100px;
+  }
+}
