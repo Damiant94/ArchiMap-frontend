@@ -13,6 +13,7 @@ export interface ObjectData {
     userId: string;
     userName: string;
   };
+  imageUrl: string;
 }
 
 export enum ObjectCategory {

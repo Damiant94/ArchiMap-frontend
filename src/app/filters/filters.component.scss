@@ -22,19 +22,15 @@
     display: flex;
     width: 100%;
 
-    .type-select {
-      display: flex;
-      width: 100%;
-    }
-
+    .type-select,
     .country-select {
       display: flex;
       width: 100%;
-    }
 
-    select {
-      padding: 5px;
-      flex-grow: 1;
+      select {
+        padding: 5px;
+        flex-grow: 1;
+      }
     }
   }
 

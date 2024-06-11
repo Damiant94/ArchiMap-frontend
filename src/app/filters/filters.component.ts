@@ -18,11 +18,19 @@ export class FiltersComponent {
   typeSelect: string = '';
   countrySelect: string = '';
 
+  countries: string[] = [];
+  categories: string[] = [];
+
   onFilterChange() {
     this.objectsService.filtersSubject.next({
       search: this.searchInput,
       type: this.typeSelect,
       country: this.countrySelect,
     });
+  }
+
+  ngOnInit() {
+    this.countries = this.objectsService.getCountries();
+    this.categories = this.objectsService.getCategories();
   }
 }

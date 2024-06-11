@@ -18,9 +18,9 @@
         (change)="onFilterChange()"
       >
         <option value="">Any</option>
-        <option value="MONUMENT">Monument</option>
-        <option value="APARTMENT">Apartment</option>
-        <option value="CATHEDRAL">Cathedral</option>
+        @for (category of categories; track category) {
+          <option value={{category}}>{{category}}</option>
+        }
       </select>
     </div>
     <div class="country-select">
@@ -31,9 +31,9 @@
         (change)="onFilterChange()"
       >
         <option value="">Any</option>
-        <option value="Poland">Poland</option>
-        <option value="France">France</option>
-        <option value="Italy">Italy</option>
+        @for (country of countries; track country) {
+          <option value={{country}}>{{country}}</option>
+        }
       </select>
     </div>
   </div>

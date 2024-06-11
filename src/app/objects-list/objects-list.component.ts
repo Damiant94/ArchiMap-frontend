@@ -13,12 +13,12 @@ import { ObjectData } from '../_models/objectData';
 export class ObjectsListComponent {
   constructor(private objectsService: ObjectsService) {}
 
-  objects: ObjectData[] = [];
+  objects: ObjectData[] | undefined = [];
 
   ngOnInit() {
     this.objects = this.objectsService.getFilteredObjects();
     this.objectsService.objectsFilteredSubject.subscribe(
-      (objects: ObjectData[]) => {
+      (objects: ObjectData[] | undefined) => {
         this.objects = objects;
       }
     );
