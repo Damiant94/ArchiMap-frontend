@@ -6,6 +6,7 @@ import { MapComponent } from './map/map.component';
 import { ObjectsListComponent } from './objects-list/objects-list.component';
 import { FiltersComponent } from './filters/filters.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ObjectDetailsComponent } from './object-details/object-details.component';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     ObjectsListComponent,
     FiltersComponent,
     MatIconModule,
+    ObjectDetailsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

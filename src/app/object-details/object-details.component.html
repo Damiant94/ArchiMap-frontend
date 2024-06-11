@@ -1,1 +1,33 @@
-<p>object-details works!</p>
+<app-backdrop />
+<div class="container">
+  <div class="info">
+    <div class="name">
+      Name: <span>{{ objectData?.name }}</span>
+    </div>
+    <div class="location">
+      Location:
+      <span
+        >{{ objectData?.location?.country }},
+        {{ objectData?.location?.city }}</span
+      >
+    </div>
+    <div class="description">{{ objectData?.description }}</div>
+    <!-- <div>id: {{ id }}</div> -->
+  </div>
+  <div class="image">
+    <img src="{{ objectData?.urls?.imageUrl }}" alt="{{ objectData?.name }}" />
+  </div>
+  <div class="additional-info">
+    <div class="category-container">
+        <div class="category">
+          Type: <span>{{ objectData?.category | titlecase }}</span>
+          <img
+            src="{{ getObjectCategoryIconUrl(objectData!.category) }}"
+            alt="type-icon"
+          />
+        </div>
+      </div>
+    <div class="links"></div>
+    <div class="username">Added by: {{ objectData?.userData?.username }}</div>
+  </div>
+</div>

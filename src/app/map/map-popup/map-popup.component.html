@@ -3,12 +3,12 @@
     <img
       alt="Eiffel Tower"
       src="{{
-        objectData?.imageUrl ? objectData?.imageUrl : 'logo/building64-2.png'
+        objectData?.urls?.imageUrl ? objectData?.urls?.imageUrl : 'logo/building64-2.png'
       }}"
     />
   </div>
   <div class="content">
-    <div class="name">{{ objectData?.name }}</div>
+    <div class="name" (click)="openDetails()">{{ objectData?.name }}</div>
     <div class="location">
       {{ objectData?.location?.country }} / {{ objectData?.location?.city }}
     </div>
