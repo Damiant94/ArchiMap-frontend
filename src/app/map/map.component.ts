@@ -1,9 +1,14 @@
 import {
   Component,
-  OnInit,
   ChangeDetectionStrategy,
   ElementRef,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
+
+import { ObjectCategory, ObjectData } from '../_models/objectData';
+import { MapPopupComponent } from './map-popup/map-popup.component';
+import { ObjectsService } from '../_services/objects/objects.service';
 import { MapService } from '../_services/map/map.service';
 
 import Map from 'ol/Map';
@@ -12,26 +17,26 @@ import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
 import { Geometry, Point } from 'ol/geom';
 import Overlay from 'ol/Overlay';
-import { ObjectsService } from '../_services/objects/objects.service';
-import { ObjectCategory, ObjectData } from '../_models/objectData';
-import Icon from 'ol/style/Icon';
-import Style from 'ol/style/Style';
+import { Icon, Style } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [],
-  template: '',
+  imports: [MapPopupComponent],
+  templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
+  objectData: ObjectData | undefined;
+  @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
+
   private map: Map | undefined;
-  // private overlay: Overlay | undefined;
-  private vectorSource!: VectorSource;
-  private vectorLayer!: VectorLayer<Feature<Geometry>>;
+  private vectorSource: VectorSource | undefined;
+  private vectorLayer: VectorLayer<Feature<Geometry>> | undefined;
+  private overlay: Overlay | undefined;
 
   constructor(
     private elementRef: ElementRef,
@@ -39,16 +44,33 @@ export class MapComponent implements OnInit {
     private objectsService: ObjectsService
   ) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.map = this.mapService.getMap();
     this.map.setTarget(this.elementRef.nativeElement);
 
     this.createNewVectorSource();
     this.createMarkers();
+    this.createOverlayForPopups()
 
-    this.map.on('pointermove', (event) => {
-      const hit = this.map!.hasFeatureAtPixel(event.pixel);
+    this.map.on('pointermove', (pointerMoveEvent) => {
+      const hit = this.map!.hasFeatureAtPixel(pointerMoveEvent.pixel);
       this.map!.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
+
+    this.map?.on('singleclick', (clickEvent) => {
+      const feature = this.map!.forEachFeatureAtPixel(
+        clickEvent.pixel,
+        (feature) => feature
+      );
+
+      if (feature) {
+        const coordinates = (feature.getGeometry() as Point).getCoordinates();
+        const objectData: ObjectData = feature.get('objectData');
+        this.objectData = objectData;
+        this.overlay!.setPosition(coordinates);
+      } else {
+        this.overlay!.setPosition(undefined);
+      }
     });
   }
 
@@ -60,10 +82,18 @@ export class MapComponent implements OnInit {
     this.map?.addLayer(this.vectorLayer);
   }
 
+  createOverlayForPopups(): void {
+    this.overlay = new Overlay({
+      element: this.popupContainer?.nativeElement,
+      autoPan: true,
+    });
+    this.map?.addOverlay(this.overlay);
+  }
+
   createMarkers(): void {
     this.objectsService.objectsFilteredSubject.subscribe(
       (objects: ObjectData[] | undefined) => {
-        this.vectorSource.refresh();
+        this.vectorSource?.refresh();
 
         objects?.forEach((object: ObjectData) => {
           this.createMarker(object);
@@ -77,20 +107,19 @@ export class MapComponent implements OnInit {
 
     const markerFeature = new Feature({
       geometry: new Point(cordinate),
-      name: object.name,
-      description: object.description,
+      objectData: {...object}
     });
 
     const markerStyle = new Style({
       image: new Icon({
         src: this.getMapIconUrl(object.category),
         anchor: [0.5, 1],
-        scale: 1
-      })
+        scale: 1,
+      }),
     });
 
     markerFeature.setStyle(markerStyle);
-    this.vectorSource.addFeature(markerFeature);
+    this.vectorSource?.addFeature(markerFeature);
   }
 
   getMapIconUrl(category: ObjectCategory): string {
