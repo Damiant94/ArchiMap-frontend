@@ -1,0 +1,62 @@
+<app-backdrop />
+<div class="container">
+  @if (stage === 1) {
+  <div class="map" #mapContainer></div>
+  <div class="bottom">
+    @if (coordinateLonLat) {
+    <div class="location">
+      <div>Country: {{ country }}</div>
+      <div>City: {{ city }}</div>
+    </div>
+    <div class="coordinate">
+      <div>longitude: {{ coordinateLonLat[0] | number : "1.2-3" }}</div>
+      <div>latitude: {{ coordinateLonLat[1] | number : "1.2-3" }}</div>
+    </div>
+    }
+    <button [disabled]="!coordinateLonLat" (click)="onNext()">Next</button>
+  </div>
+  } @else {
+  <form [formGroup]="addObjectForm2stage" (ngSubmit)="onSubmit()">
+    <div class="name">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="description">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        type="text"
+        formControlName="description"
+      ></textarea>
+    </div>
+    <div class="category">
+      <label for="category">Category</label>
+      <select id="category" type="text" formControlName="category">
+        @for (category of categories; track category) {
+        <option value="{{ category }}">{{ category | titlecase }}</option>
+        }
+      </select>
+    </div>
+    <div class="image-url">
+      <label for="imageUrl">ImageUrl</label>
+      <input id="imageUrl" type="text" formControlName="imageUrl" />
+    </div>
+
+    <div formGroupName="location">
+      <div class="country">
+        <label for="country">Country</label>
+        <input id="country" type="text" formControlName="country" />
+      </div>
+      <div class="city">
+        <label for="city">City</label>
+        <input id="city" type="text" formControlName="city" />
+      </div>
+    </div>
+
+    <button type="button" (click)="onBack()">Back</button>
+    <button type="submit" [disabled]="!addObjectForm2stage.valid">
+      Submit
+    </button>
+  </form>
+  }
+</div>

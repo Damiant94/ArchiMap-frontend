@@ -22,7 +22,23 @@ export class MapService {
     ]
   });
 
+  
+
   getMap(): Map {
     return this.map;
+  }
+
+  getNewMap(): Map {
+    return new Map({
+      view: new View({
+        center: [0, 0],
+        zoom: 1,
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ]
+    });
   }
 }
