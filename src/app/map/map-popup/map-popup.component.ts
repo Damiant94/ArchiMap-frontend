@@ -16,6 +16,6 @@ export class MapPopupComponent {
   constructor(private router: Router){}
 
   openDetails(): void {
-    this.router.navigate(['details', this.objectData?.id]);
+    this.router.navigate(['details', this.objectData?._id]);
   }
 }

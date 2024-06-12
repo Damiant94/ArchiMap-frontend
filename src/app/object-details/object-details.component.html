@@ -15,19 +15,19 @@
     <!-- <div>id: {{ id }}</div> -->
   </div>
   <div class="image">
-    <img src="{{ objectData?.urls?.imageUrl }}" alt="{{ objectData?.name }}" />
+    <img src="{{ objectData?.imageUrl }}" alt="{{ objectData?.name }}" />
   </div>
   <div class="additional-info">
     <div class="category-container">
         <div class="category">
           Type: <span>{{ objectData?.category | titlecase }}</span>
           <img
-            src="{{ getObjectCategoryIconUrl(objectData!.category) }}"
+            src="{{ getObjectCategoryIconUrl(objectData?.category) }}"
             alt="type-icon"
           />
         </div>
       </div>
     <div class="links"></div>
-    <div class="username">Added by: {{ objectData?.userData?.username }}</div>
+    <div class="username">Added by: {{ objectData?.username }}</div>
   </div>
 </div>

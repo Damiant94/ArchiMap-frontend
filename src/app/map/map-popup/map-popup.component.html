@@ -1,9 +1,9 @@
 <div class="container">
   <div class="image">
     <img
-      alt="Eiffel Tower"
+      alt="{{ objectData?.name }}"
       src="{{
-        objectData?.urls?.imageUrl ? objectData?.urls?.imageUrl : 'logo/building64-2.png'
+        objectData?.imageUrl ? objectData?.imageUrl : 'logo/building64-2.png'
       }}"
     />
   </div>

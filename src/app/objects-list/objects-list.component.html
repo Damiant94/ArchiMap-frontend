@@ -1,5 +1,5 @@
 <div class="container">
-  @for (object of objects; track object.id) {
+  @for (object of objects; track object._id) {
     <app-objects-list-element [objectData]="object" />
   }
 </div>

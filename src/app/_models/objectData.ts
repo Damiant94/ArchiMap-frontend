@@ -1,19 +1,15 @@
 export interface ObjectData {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   location: {
-    coordinates: number[];
+    coordinateLonLat: number[];
     country: string;
     city: string;
   };
-  dateOfBuild?: string;
   category: ObjectCategory;
-  userData: {
-    userId: string;
-    userName: string;
-  };
-  imageUrl: string;
+  username: string;
+  imageUrl?: string;
 }
 
 export enum ObjectCategory {
