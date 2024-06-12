@@ -27,13 +27,12 @@ export class ObjectDetailsComponent {
       this.id = params['id'];
     });
 
-    this.objectData = this.objectsService.getObjectById(this.id);
-    if (!this.objectData) {
-      this.router.navigate(['/']);
-    }
+    this.objectsService.getObjectById(this.id).subscribe(object => {
+      this.objectData = object
+    })
   }
 
-  getObjectCategoryIconUrl(category: ObjectCategory) {
+  getObjectCategoryIconUrl(category: ObjectCategory | undefined) {
     return this.objectsService.getObjectCategoryIconUrl(category);
   }
 }

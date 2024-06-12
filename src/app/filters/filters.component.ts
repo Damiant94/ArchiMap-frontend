@@ -3,6 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { FormsModule } from '@angular/forms';
+import { ObjectCategory } from '../_models/objectData';
 
 @Component({
   selector: 'app-filters',
@@ -19,7 +20,7 @@ export class FiltersComponent {
   countrySelect: string = '';
 
   countries: string[] = [];
-  categories: string[] = [];
+  categories: string[] = Object.keys(ObjectCategory);
 
   onFilterChange() {
     this.objectsService.filtersSubject.next({
@@ -30,7 +31,29 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
-    this.countries = this.objectsService.getCountries();
-    this.categories = this.objectsService.getCategories();
+    this.objectsService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries = countries;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+
+    this.objectsService.objectsChangedSubject.subscribe({
+      next: () => {
+        this.objectsService.getCountries().subscribe({
+          next: (countries) => {
+            this.countries = countries;
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 
-import { ObjectCategory, ObjectData } from '../_models/objectData';
+import { ObjectData } from '../_models/objectData';
 import { MapPopupComponent } from './map-popup/map-popup.component';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { MapService } from '../_services/map/map.service';
@@ -91,7 +91,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   createMarkers(): void {
-    this.objectsService.objectsFilteredSubject.subscribe(
+    this.objectsService.objectsChangedSubject.subscribe(
       (objects: ObjectData[] | undefined) => {
         this.vectorSource?.refresh();
 
@@ -103,7 +103,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   createMarker(object: ObjectData): void {
-    const cordinate: Coordinate = fromLonLat(object.location.coordinates);
+    const cordinate: Coordinate = fromLonLat(object.location.coordinateLonLat);
 
     const markerFeature = new Feature({
       geometry: new Point(cordinate),
@@ -112,7 +112,7 @@ export class MapComponent implements AfterViewInit {
 
     const markerStyle = new Style({
       image: new Icon({
-        src: this.getMapIconUrl(object.category),
+        src: this.objectsService.getObjectCategoryIconUrl(object.category),
         anchor: [0.5, 1],
         scale: 1,
       }),
@@ -120,22 +120,5 @@ export class MapComponent implements AfterViewInit {
 
     markerFeature.setStyle(markerStyle);
     this.vectorSource?.addFeature(markerFeature);
-  }
-
-  getMapIconUrl(category: ObjectCategory): string {
-    switch (category) {
-      case ObjectCategory.APARTMENT:
-        return 'mapIcons/apartment.png';
-      case ObjectCategory.NATURE:
-        return 'mapIcons/nature.png';
-      case ObjectCategory.CATHEDRAL:
-        return 'mapIcons/cathedral.png';
-      case ObjectCategory.MONUMENT:
-        return 'mapIcons/monument.png';
-      case ObjectCategory.COMPANY:
-        return 'mapIcons/company.png';
-      case ObjectCategory.OTHER:
-        return 'mapIcons/other.png';
-    }
   }
 }

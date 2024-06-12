@@ -16,8 +16,7 @@ export class ObjectsListComponent {
   objects: ObjectData[] | undefined = [];
 
   ngOnInit() {
-    this.objects = this.objectsService.getFilteredObjects();
-    this.objectsService.objectsFilteredSubject.subscribe(
+    this.objectsService.objectsChangedSubject.subscribe(
       (objects: ObjectData[] | undefined) => {
         this.objects = objects;
       }
