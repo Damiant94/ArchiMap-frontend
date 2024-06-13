@@ -1,7 +1,13 @@
 .container {
+  width: 320px;
   max-height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 20px;
   background-color: white;
+}
+
+@media (max-width: 700px) {
+  .container {
+    width: 100%;
+  }
 }

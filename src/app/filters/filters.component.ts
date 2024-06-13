@@ -4,11 +4,20 @@ import { MatInputModule } from '@angular/material/input';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { FormsModule } from '@angular/forms';
 import { ObjectCategory } from '../_models/objectData';
+import { MatSelectModule } from '@angular/material/select';
+import { CommonModule } from '@angular/common';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-filters',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatSelectModule,
+    CommonModule,
+  ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
 })
@@ -31,29 +40,15 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
-    this.objectsService.getCountries().subscribe({
-      next: (countries) => {
-        this.countries = countries;
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-
-    this.objectsService.objectsChangedSubject.subscribe({
-      next: () => {
-        this.objectsService.getCountries().subscribe({
-          next: (countries) => {
-            this.countries = countries;
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
+    this.objectsService.objectsChangedSubject
+      .pipe(switchMap(() => this.objectsService.getCountries()))
+      .subscribe({
+        next: (countries) => {
+          this.countries = countries;
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
   }
 }

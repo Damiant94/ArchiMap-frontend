@@ -1,41 +1,22 @@
 .container {
-  padding: 5px 60px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  height: 100%;
   align-items: center;
+  user-select: none;
 
-  .search-input {
-    width: 100%;
-
-    input {
-      padding: 5px;
-      width: 100%;
-    }
-
-    label {
-      display: block;
-      font-size: 0.8rem;
-    }
+  .search {
+    grid-column: 1 / span 2;
+    padding-top: 10px;
   }
+}
 
-  .selects {
-    display: flex;
-    width: 100%;
+@media (max-width: 700px) {
+  .container {
+    padding: 0 30px;
 
-    .type-select,
-    .country-select {
-      display: flex;
-      width: 100%;
-
-      select {
-        padding: 5px;
-        flex-grow: 1;
-      }
+    .search {
+      padding-right: 100px;
     }
-  }
-
-  input,
-  select {
-    outline: none;
   }
 }

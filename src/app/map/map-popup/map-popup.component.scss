@@ -11,6 +11,12 @@
   height: 100px;
   display: flex;
   align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
 
   &:after,
   &:before {
@@ -40,26 +46,35 @@
   .content {
     flex-grow: 1;
     margin-left: 15px;
+    white-space: nowrap;
+    overflow: hidden;
 
     .name {
       font-weight: bold;
       font-size: 0.8rem;
       line-height: 1rem;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .location {
       font-size: 0.8rem;
       line-height: 1rem;
+      text-overflow: ellipsis;
+      text-wrap: wrap;
+      overflow: hidden;
     }
   }
 
   .image {
-    height: 100%;
+    height: 68px;
+    overflow: hidden;
+    flex: 0 0 68px;
 
     img {
       border-radius: 20px;
-      max-height: 100%;
-      width: auto;
+      width: 68px;
+      height: 68px;
       aspect-ratio: 1 / 1;
       object-fit: cover;
     }

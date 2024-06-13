@@ -3,22 +3,28 @@
     <app-navbar />
   </nav>
   <main class="main">
-    <div class="filters">
-      <app-filters />
-    </div>
-    <div class="objects-list" #objectsList>
-      <app-objects-list />
+    <div class="left-panel">
+      <div class="filters">
+        <app-filters />
+      </div>
+      <div class="objects-list" #objectsList>
+        <app-objects-list />
+      </div>
     </div>
     <div class="map">
       <app-map />
     </div>
-    <button class="toggle" (click)="onToggle()">
-      @if (displayList) {
-        <mat-icon fontIcon="public"></mat-icon>
-        <p>Map</p>
+
+    <button
+      mat-icon-button
+      matTooltip="{{ isShowList ? 'Map' : 'List' }}"
+      class="toggle"
+      (click)="onToggle()"
+    >
+      @if (isShowList) {
+        <mat-icon>public</mat-icon>
       } @else {
-        <mat-icon fontIcon="list"></mat-icon>
-        <p>List</p>
+        <mat-icon>list</mat-icon>
       }
     </button>
   </main>

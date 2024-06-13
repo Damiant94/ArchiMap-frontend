@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ObjectCategory, ObjectData } from '../../_models/objectData';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -9,9 +9,12 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class ObjectsService {
+  hideListSubject = new Subject<void>();
   filtersSubject = new Subject<Filters>();
   objectsChangedSubject = new BehaviorSubject<ObjectData[]>([]);
+
   objects: ObjectData[] = [];
+  filteredObjects: ObjectData[] = [];
 
   private filters: Filters = {
     search: '',
@@ -24,19 +27,20 @@ export class ObjectsService {
       this.filters = filters;
       this.emitNewFilteredObjects();
     });
-    this.getObjects().subscribe((objects) => {
-      this.objects = objects;
-      this.emitNewFilteredObjects();
-    });
   }
 
-  emitNewFilteredObjects() {
-    const filteredObjects = this.getFilteredObjects();
-    this.objectsChangedSubject.next(filteredObjects);
+  emitNewFilteredObjects(): void {
+    this.filterObjects();
+    this.objectsChangedSubject.next(this.filteredObjects);
   }
 
   getObjects(): Observable<ObjectData[]> {
-    return this.http.get<any>(`http://localhost:8080/feed/get-objects`);
+    return this.http.get<any>(`http://localhost:8080/feed/get-objects`).pipe(
+      tap((objects: ObjectData[]) => {
+        this.objects = objects;
+        this.emitNewFilteredObjects();
+      })
+    );
   }
 
   getObjectById(id: string): Observable<ObjectData> {
@@ -47,30 +51,23 @@ export class ObjectsService {
     return this.http.get<any>(`http://localhost:8080/feed/get-countries`);
   }
 
-  addNewObject(objectData: ObjectData) {
+  addNewObject(objectData: ObjectData): Subscription {
     return this.http
       .post<any>(`http://localhost:8080/feed/add-object/`, objectData)
       .subscribe({
-        next: (result) => {
-          this.getObjects().subscribe({
-            next: (objects) => {
-              this.objects = objects;
-              this.emitNewFilteredObjects();
-              this.router.navigate(["/"])
-            },
-            error: (err: any) => {
-              console.log(err)
-            }
-          })
+        next: () => {
+          this.getObjects().subscribe(() => {
+            this.router.navigate(['/']);
+          });
         },
         error: (err) => {
-          console.log;
+          console.log(err);
         },
-      })
+      });
   }
 
-  getFilteredObjects(): ObjectData[] {
-    return this.objects.filter((object: ObjectData) => {
+  filterObjects(): void {
+    this.filteredObjects = this.objects.filter((object: ObjectData) => {
       return (
         (object.name
           .toLowerCase()

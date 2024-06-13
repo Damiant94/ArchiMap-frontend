@@ -1,43 +1,91 @@
 .container {
   display: flex;
-  height: 150px;
+  height: 100px;
   width: 100%;
   background-color: white;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  padding: 0 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.1s ease-in-out;
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+  }
+
+  &:active {
+    background-color: rgba(128, 128, 128, 0.2);
+  }
+
+  &.isLast {
+    border-bottom: none;
+  }
 
   .content {
     margin: auto;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
 
     .name {
       font-weight: bold;
       font-size: 0.8rem;
       line-height: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .location {
       font-size: 0.8rem;
       line-height: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
+  .icon {
+    margin: auto;
+  }
+
   .image {
-    height: 100%;
+    width: 59px;
+    flex: 0 0 59px;
     padding: 20px 0;
+    overflow: hidden;
 
     img {
       border-radius: 20px;
       max-height: 100%;
-      width: auto;
       aspect-ratio: 1 / 1;
       object-fit: cover;
     }
   }
 }
 
-@media (min-width: 700px) {
+@media (max-width: 700px) {
+  .container {
+    height: 150px;
+
+    .image {
+      flex: 0 0 109px;
+    }
+
+    .icon {
+
+      button {
+        transform: scale(1.5);
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
   .container {
     height: 100px;
+
+    .image {
+      flex: 0 0 59px;
+    }
   }
 }

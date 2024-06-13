@@ -7,6 +7,9 @@ import { ObjectsListComponent } from './objects-list/objects-list.component';
 import { FiltersComponent } from './filters/filters.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ObjectDetailsComponent } from './object-details/object-details.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ObjectsService } from './_services/objects/objects.service';
 
 @Component({
   selector: 'app-root',
@@ -19,25 +22,48 @@ import { ObjectDetailsComponent } from './object-details/object-details.componen
     ObjectsListComponent,
     FiltersComponent,
     MatIconModule,
-    ObjectDetailsComponent
+    ObjectDetailsComponent,
+    MatButtonModule,
+    MatTooltipModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private objectsService: ObjectsService
+  ) {}
 
   @ViewChild('objectsList') objectsList!: ElementRef<HTMLElement>;
 
-  displayList = true;
+  isShowList = true;
+
+  ngOnInit() {
+    this.objectsService.getObjects().subscribe();
+
+    this.objectsService.hideListSubject.subscribe(() => {
+      if (this.isShowList) {
+        this.hideList();
+      }
+    });
+  }
+
+  showList(){
+    this.isShowList = true;
+    this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '1');
+  }
+
+  hideList(){
+    this.isShowList = false;
+    this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '0');
+  }
 
   onToggle() {
-    if (this.displayList) {
-      this.displayList = false;
-      this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '0');
-    } else {
-      this.displayList = true;
-      this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '1');
+    if (this.isShowList) {
+      this.hideList();
+      return;
     }
+    this.showList();
   }
 }

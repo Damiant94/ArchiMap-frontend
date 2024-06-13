@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="search-input">
+  <!-- <div class="search-input">
     <label for="search">Search</label>
     <input
       type="text"
@@ -36,5 +36,31 @@
         }
       </select>
     </div>
-  </div>
+  </div> -->
+  <!-- <div class="search"> -->
+    <mat-form-field appearance="outline" class="search">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchInput" (input)="onFilterChange()" />
+    </mat-form-field>
+  <!-- </div> -->
+  <!-- <div class="selects"> -->
+    <mat-form-field appearance="outline" class="select-category">
+      <mat-label>Category</mat-label>
+      <mat-select [(ngModel)]="typeSelect" (selectionChange)="onFilterChange()">
+        <mat-option value="">Any</mat-option>
+        @for (category of categories; track category) {
+          <mat-option value="{{ category }}">{{ category | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="select-country">
+      <mat-label>Country</mat-label>
+      <mat-select [(ngModel)]="countrySelect" (selectionChange)="onFilterChange()">
+        <mat-option value="">Any</mat-option>
+        @for (country of countries; track country) {
+          <mat-option value="{{ country }}">{{ country }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  <!-- </div> -->
 </div>
