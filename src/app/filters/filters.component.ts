@@ -7,6 +7,9 @@ import { ObjectCategory } from '../_models/objectData';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { switchMap } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-filters',
@@ -17,6 +20,9 @@ import { switchMap } from 'rxjs';
     FormsModule,
     MatSelectModule,
     CommonModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
@@ -50,5 +56,17 @@ export class FiltersComponent {
           console.log(err);
         },
       });
+  }
+
+  isFiltersEmpty(): boolean {
+    return (!this.searchInput && !this.typeSelect && !this.countrySelect);
+  }
+
+  onResetFilters(): void {
+    if (this.isFiltersEmpty()) return;
+    this.searchInput = '';
+    this.typeSelect = '';
+    this.countrySelect = '';
+    this.onFilterChange();
   }
 }

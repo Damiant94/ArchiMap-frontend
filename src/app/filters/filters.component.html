@@ -1,66 +1,38 @@
 <div class="container">
-  <!-- <div class="search-input">
-    <label for="search">Search</label>
-    <input
-      type="text"
-      name="search"
-      id="search"
-      [(ngModel)]="searchInput"
-      (input)="onFilterChange()"
-    />
-  </div>
-  <div class="selects">
-    <div class="type-select">
-      <select
-        name="type"
-        id="type"
-        [(ngModel)]="typeSelect"
-        (change)="onFilterChange()"
-      >
-        <option value="">Any</option>
-        @for (category of categories; track category) {
-          <option value={{category}}>{{category}}</option>
-        }
-      </select>
-    </div>
-    <div class="country-select">
-      <select
-        name="country"
-        id="country"
-        [(ngModel)]="countrySelect"
-        (change)="onFilterChange()"
-      >
-        <option value="">Any</option>
-        @for (country of countries; track country) {
-          <option value={{country}}>{{country}}</option>
-        }
-      </select>
-    </div>
-  </div> -->
-  <!-- <div class="search"> -->
+  <div class="search-container">
     <mat-form-field appearance="outline" class="search">
       <mat-label>Search</mat-label>
       <input matInput [(ngModel)]="searchInput" (input)="onFilterChange()" />
     </mat-form-field>
-  <!-- </div> -->
-  <!-- <div class="selects"> -->
-    <mat-form-field appearance="outline" class="select-category">
-      <mat-label>Category</mat-label>
-      <mat-select [(ngModel)]="typeSelect" (selectionChange)="onFilterChange()">
-        <mat-option value="">Any</mat-option>
-        @for (category of categories; track category) {
-          <mat-option value="{{ category }}">{{ category | titlecase }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="select-country">
-      <mat-label>Country</mat-label>
-      <mat-select [(ngModel)]="countrySelect" (selectionChange)="onFilterChange()">
-        <mat-option value="">Any</mat-option>
-        @for (country of countries; track country) {
-          <mat-option value="{{ country }}">{{ country }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  <!-- </div> -->
+    <button
+      mat-icon-button
+      matTooltip="Reset filters"
+      class="reset-filters"
+      (click)="onResetFilters()"
+      [disabled]="isFiltersEmpty()"
+    >
+      <mat-icon>restart_alt</mat-icon>
+    </button>
+  </div>
+  <mat-form-field appearance="outline" class="select-category">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="typeSelect" (selectionChange)="onFilterChange()">
+      <mat-option value="">Any</mat-option>
+      @for (category of categories; track category) {
+      <mat-option value="{{ category }}">{{ category | titlecase }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="select-country">
+    <mat-label>Country</mat-label>
+    <mat-select
+      [(ngModel)]="countrySelect"
+      (selectionChange)="onFilterChange()"
+    >
+      <mat-option value="">Any</mat-option>
+      @for (country of countries; track country) {
+        <mat-option value="{{ country }}">{{ country }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>
