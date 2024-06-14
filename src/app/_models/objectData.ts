@@ -5,7 +5,7 @@ export interface ObjectData {
   location: {
     coordinateLonLat: number[];
     country: string;
-    city: string;
+    place: string;
   };
   category: ObjectCategory;
   username: string;
