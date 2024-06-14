@@ -8,8 +8,9 @@
   <div class="content">
     <div class="name">{{ objectData?.name }}</div>
     <div class="location">
-      {{ objectData?.location?.country }} / {{ objectData?.location?.city }}
-    </div>
+      {{ objectData?.location?.country }} / {{ objectData?.location?.place }}
+      </div>
+    <div class="description">{{ objectData?.description }}</div>
   </div>
   <div class="icon">
     <button mat-icon-button matTooltip="Locate on map" matTooltipShowDelay="500" (click)="onAnimateToView($event)">

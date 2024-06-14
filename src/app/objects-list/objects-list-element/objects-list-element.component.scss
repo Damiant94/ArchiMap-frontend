@@ -30,13 +30,20 @@
 
     .name {
       font-weight: bold;
+      font-size: 1rem;
+      line-height: 1.4rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .location {
       font-size: 0.8rem;
       line-height: 1rem;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .location {
+    .description {
       font-size: 0.8rem;
       line-height: 1rem;
       overflow: hidden;
