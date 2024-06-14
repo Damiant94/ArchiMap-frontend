@@ -5,44 +5,123 @@
   background-color: white;
   z-index: 11;
   transform: translate(calc(50vw - 50%), calc(50vh - 50%));
-  width: 80vw;
-  height: 60vh;
-  max-width: 900px;
+  width: 90vw;
+  max-width: 800px;
   border-radius: 20px;
-  padding: 80px;
-  //   display: grid;
-  //   grid-template-columns: 1fr 250px;
-  //   grid-template-rows: 2fr 1fr;
-  //   column-gap: 20px;
-  box-shadow: 2px 2px 10px gray;
-  overflow: auto;
+  padding: 30px;
+  padding-top: 60px;
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    transform: scale(1.5);
+  }
+
+  .mat-stepper-horizontal {
+    border-radius: 20px;
+  }
+
+  // 1 step
+
+  .map-select-info {
+    margin-top: 20px;
+  }
 
   .map {
     width: 100%;
-    height: 70%;
+    height: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
   }
 
-  .bottom {
+  .form-container {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
     align-items: center;
 
-    .location {
-      margin: 10px;
-    }
+    .coordinate-form {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      gap: 20px;
 
-    .coordinate {
-      margin: 10px;
-    }
-
-    button {
-      margin: 20px;
-      padding: 10px;
-      cursor: pointer;
-
-      &:disabled {
-        cursor: default;
+      mat-form-field {
+        flex-basis: auto;
+        flex-grow: 1;
       }
     }
+
+    .bottom {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+
+      .location {
+        height: 100%;
+        overflow: hidden;
+
+        .country {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .place {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  // 2 step
+
+  .details-form {
+    display: flex;
+    flex-direction: column;
+    // align-items: flex-end;
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      margin: 20px 0;
+      flex-basis: auto;
+      flex-grow: 1;
+      
+      mat-form-field {
+        flex-basis: auto;
+        flex-grow: 1;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      .location-inputs {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    .btns {
+      align-self: flex-end;
+    }
+  }
+
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    overflow: auto;
+    padding-top: 70px;
   }
 }

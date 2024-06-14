@@ -1,62 +1,172 @@
 <app-backdrop />
 <div class="container">
-  @if (stage === 1) {
-  <div class="map" #mapContainer></div>
-  <div class="bottom">
-    @if (coordinateLonLat) {
-    <div class="location">
-      <div>Country: {{ country }}</div>
-      <div>City: {{ city }}</div>
-    </div>
-    <div class="coordinate">
-      <div>longitude: {{ coordinateLonLat[0] | number : "1.2-3" }}</div>
-      <div>latitude: {{ coordinateLonLat[1] | number : "1.2-3" }}</div>
-    </div>
-    }
-    <button [disabled]="!coordinateLonLat" (click)="onNext()">Next</button>
-  </div>
-  } @else {
-  <form [formGroup]="addObjectForm2stage" (ngSubmit)="onSubmit()">
-    <div class="name">
-      <label for="name">Name</label>
-      <input id="name" type="text" formControlName="name" />
-    </div>
-    <div class="description">
-      <label for="description">Description</label>
-      <textarea
-        id="description"
-        type="text"
-        formControlName="description"
-      ></textarea>
-    </div>
-    <div class="category">
-      <label for="category">Category</label>
-      <select id="category" type="text" formControlName="category">
-        @for (category of categories; track category) {
-        <option value="{{ category }}">{{ category | titlecase }}</option>
-        }
-      </select>
-    </div>
-    <div class="image-url">
-      <label for="imageUrl">ImageUrl</label>
-      <input id="imageUrl" type="text" formControlName="imageUrl" />
-    </div>
+  <button
+    mat-icon-button
+    matTooltip="Close"
+    class="close-btn"
+    (click)="onClose()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-stepper linear #stepper>
+    <mat-step [editable]="true" [completed]="isValid1stage()">
+      <ng-template matStepLabel>Select location</ng-template>
+      <p class="map-select-info">Please select location of the object</p>
+      <div class="map" #mapContainer></div>
 
-    <div formGroupName="location">
-      <div class="country">
-        <label for="country">Country</label>
-        <input id="country" type="text" formControlName="country" />
-      </div>
-      <div class="city">
-        <label for="city">City</label>
-        <input id="city" type="text" formControlName="city" />
-      </div>
-    </div>
+      <form [formGroup]="searchForm">
+        <mat-form-field>
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            type="text"
+            id="searchValue"
+            #searchInput
+            [matAutocomplete]="auto"
+            formControlName="search"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            [disabled]="isClearBtnDisabled()"
+            (click)="clearSearchForm()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            (optionSelected)="onSearchPlaceSelect($event)"
+            [displayWith]="getOptionText"
+          >
+            <mat-option *ngFor="let place of searchValuePlaces" [value]="place">
+              {{ place.displayName }}
+            </mat-option>
+          </mat-autocomplete>
+          @if (searchForm.invalid) {
+          <mat-error>No places found</mat-error>
+          }
+        </mat-form-field>
+      </form>
 
-    <button type="button" (click)="onBack()">Back</button>
-    <button type="submit" [disabled]="!addObjectForm2stage.valid">
-      Submit
-    </button>
-  </form>
-  }
+      <div class="form-container">
+        <form [formGroup]="addObjectForm1stage" class="coordinate-form">
+          <mat-form-field>
+            <mat-label>Longitude</mat-label>
+            <input
+              matInput
+              type="number"
+              id="coordinateLon"
+              formControlName="coordinateLon"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Latitude</mat-label>
+            <input
+              matInput
+              type="number"
+              id="coordinateLat"
+              formControlName="coordinateLat"
+            />
+          </mat-form-field>
+        </form>
+
+        <div class="bottom">
+          <div class="next-btn">
+            <button mat-button matStepperNext [disabled]="!isValid1stage()">
+              Next
+            </button>
+          </div>
+
+          @if (coordinateLonLat) {
+          <div class="location">
+            <div class="country"><small>Country: </small> {{ country }}</div>
+            <mat-divider />
+            <div class="place"><small>Place: </small> {{ place }}</div>
+          </div>
+          }
+        </div>
+      </div>
+    </mat-step>
+
+    <mat-step [stepControl]="addObjectForm2stage" [editable]="true">
+      <ng-template matStepLabel>Fill out object information</ng-template>
+
+      <form
+        class="details-form"
+        [formGroup]="addObjectForm2stage"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="form-fields">
+          <p>Please provide information about the object</p>
+
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput id="name" type="text" formControlName="name" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              id="description"
+              type="text"
+              formControlName="description"
+              rows="3"
+            ></textarea>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Category</mat-label>
+            <mat-select id="category" type="text" formControlName="category">
+              @for (category of categories; track category) {
+              <mat-option value="{{ category }}">{{
+                category | titlecase
+              }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>ImageUrl</mat-label>
+            <input
+              matInput
+              id="imageUrl"
+              type="text"
+              formControlName="imageUrl"
+            />
+          </mat-form-field>
+
+          <div class="location-inputs" formGroupName="location">
+            <mat-form-field>
+              <mat-label>Country</mat-label>
+              <input
+                matInput
+                id="country"
+                type="text"
+                formControlName="country"
+              />
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Place</mat-label>
+              <input matInput id="place" type="text" formControlName="place" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button mat-button matStepperPrevious>Back</button>
+          <button
+            mat-button
+            matStepperNext
+            type="submit"
+            [disabled]="!addObjectForm2stage.valid"
+          >
+            Add
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
 </div>
