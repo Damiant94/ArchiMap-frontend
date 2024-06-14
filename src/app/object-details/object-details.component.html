@@ -1,33 +1,79 @@
 <app-backdrop />
 <div class="container">
-  <div class="info">
-    <div class="name">
-      Name: <span>{{ objectData?.name }}</span>
-    </div>
-    <div class="location">
-      Location:
-      <span
-        >{{ objectData?.location?.country }},
-        {{ objectData?.location?.city }}</span
-      >
-    </div>
-    <div class="description">{{ objectData?.description }}</div>
-    <!-- <div>id: {{ id }}</div> -->
-  </div>
-  <div class="image">
-    <img src="{{ objectData?.imageUrl }}" alt="{{ objectData?.name }}" />
-  </div>
-  <div class="additional-info">
-    <div class="category-container">
-        <div class="category">
-          Type: <span>{{ objectData?.category | titlecase }}</span>
-          <img
-            src="{{ getObjectCategoryIconUrl(objectData?.category) }}"
-            alt="type-icon"
-          />
-        </div>
+  <button
+    mat-icon-button
+    matTooltip="Close"
+    class="close-btn"
+    (click)="onClose()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="main">
+    <div class="info">
+      <div class="name">{{ objectData?.name }}</div>
+
+      <mat-divider />
+
+      <div class="location">
+        {{ objectData?.location?.country }}, {{ objectData?.location?.place }}
       </div>
-    <div class="links"></div>
-    <div class="username">Added by: {{ objectData?.username }}</div>
+
+      <mat-divider />
+      <div class="description">
+        {{ objectData?.description }}
+      </div>
+    </div>
+
+    <mat-divider />
+
+    <div class="image">
+      <img
+        src="{{ objectData?.imageUrl }}"
+        alt="{{ objectData?.name }} image"
+      />
+    </div>
+  </div>
+
+  <mat-divider />
+
+  <div class="additional-info">
+    <div class="additional">
+      <div class="category">
+        <small>Category:</small> {{ objectData?.category | titlecase }}
+        <img
+          src="{{ getObjectCategoryIconUrl(objectData?.category) }}"
+          alt="type-icon"
+        />
+      </div>
+
+      <mat-divider />
+
+      <div class="username">
+        <small>Added by:</small> {{ objectData?.username }}
+      </div>
+    </div>
+
+    <div class="links">
+      <button
+        class="google-maps-btn"
+        mat-icon-button
+        matTooltip="Open in Google Maps"
+        matTooltipShowDelay="500"
+        (click)="openGoogleMapsUrl()"
+      >
+        <img src="linksIcons/googlemaps.png" alt="map-icon" />
+      </button>
+      <mat-divider vertical="true" />
+      <button
+        class="map-btn"
+        mat-icon-button
+        matTooltip="Locate on map"
+        matTooltipShowDelay="500"
+        (click)="onAnimateToView()"
+      >
+        <img src="linksIcons/map.png" alt="map-icon" />
+      </button>
+    </div>
   </div>
 </div>
