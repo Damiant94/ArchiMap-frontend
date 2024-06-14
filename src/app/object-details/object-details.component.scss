@@ -9,6 +9,9 @@
   max-width: 800px;
   border-radius: 20px;
   padding: 30px;
+  max-height: 90vh;
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
 
   .close-btn {
     position: absolute;
@@ -93,6 +96,7 @@
   .container {
     width: 100vw;
     height: 100vh;
+    max-height: 100vh;
     border-radius: 0;
     overflow: auto;
 

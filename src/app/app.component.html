@@ -7,26 +7,13 @@
       <div class="filters">
         <app-filters />
       </div>
-      <div class="objects-list" #objectsList>
+      <div class="objects-list">
         <app-objects-list />
       </div>
     </div>
     <div class="map">
       <app-map />
     </div>
-
-    <button
-      mat-icon-button
-      matTooltip="{{ isShowList ? 'Map' : 'List' }}"
-      class="toggle"
-      (click)="onToggle()"
-    >
-      @if (isShowList) {
-        <mat-icon>public</mat-icon>
-      } @else {
-        <mat-icon>list</mat-icon>
-      }
-    </button>
   </main>
   <footer class="footer">
     <app-footer />

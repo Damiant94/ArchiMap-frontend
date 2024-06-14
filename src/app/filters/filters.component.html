@@ -4,15 +4,29 @@
       <mat-label>Search</mat-label>
       <input matInput [(ngModel)]="searchInput" (input)="onFilterChange()" />
     </mat-form-field>
-    <button
-      mat-icon-button
-      matTooltip="Reset filters"
-      class="reset-filters"
-      (click)="onResetFilters()"
-      [disabled]="isFiltersEmpty()"
-    >
-      <mat-icon>restart_alt</mat-icon>
-    </button>
+    <div class="btns">
+      <button
+        mat-icon-button
+        matTooltip="Reset filters"
+        class="reset-filters"
+        (click)="onResetFilters()"
+        [disabled]="isFiltersEmpty()"
+      >
+        <mat-icon>restart_alt</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        matTooltip="{{ isShowList ? 'Map' : 'List' }}"
+        class="toggle-map"
+        (click)="onToggleShowMap()"
+      >
+        @if (isShowList) {
+        <mat-icon>public</mat-icon>
+        } @else {
+        <mat-icon>list</mat-icon>
+        }
+      </button>
+    </div>
   </div>
   <mat-form-field appearance="outline" class="select-category">
     <mat-label>Category</mat-label>
@@ -31,7 +45,7 @@
     >
       <mat-option value="">Any</mat-option>
       @for (country of countries; track country) {
-        <mat-option value="{{ country }}">{{ country }}</mat-option>
+      <mat-option value="{{ country }}">{{ country }}</mat-option>
       }
     </mat-select>
   </mat-form-field>

@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class ObjectsService {
-  hideListSubject = new Subject<void>();
   filtersSubject = new Subject<Filters>();
   objectsChangedSubject = new BehaviorSubject<ObjectData[]>([]);
 

@@ -4,6 +4,7 @@ import {
   ElementRef,
   ViewChild,
   AfterViewInit,
+  Renderer2,
 } from '@angular/core';
 
 import { ObjectData } from '../_models/objectData';
@@ -19,19 +20,31 @@ import Map from 'ol/Map';
   imports: [MapPopupComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
-  objectData: ObjectData | undefined;
   @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
+  
+  objectData: ObjectData | undefined;
 
   private map: Map | undefined;
 
   constructor(
     private elementRef: ElementRef,
     private mapService: MapService,
-    private objectsService: ObjectsService
+    private objectsService: ObjectsService,
+    private renderer: Renderer2
   ) {}
+
+  ngOnInit() {
+    this.mapService.toggleShowMapSubject.subscribe((isShowMap) => {
+      if (isShowMap) {
+        this.showMap();
+      } else {
+        this.hideMap();
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.map = this.mapService.getMap();
@@ -66,5 +79,14 @@ export class MapComponent implements AfterViewInit {
         this.mapService.removePopupContainer();
       }
     });
+  }
+
+  showMap() {
+    document.parentElement
+    this.renderer.setStyle(this.elementRef.nativeElement.parentNode, 'zIndex', '1');
+  }
+
+  hideMap() {
+    this.renderer.setStyle(this.elementRef.nativeElement.parentNode, 'zIndex', '0');
   }
 }

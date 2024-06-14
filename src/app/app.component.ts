@@ -31,39 +31,11 @@ import { ObjectsService } from './_services/objects/objects.service';
 })
 export class AppComponent {
   constructor(
-    private renderer: Renderer2,
-    private objectsService: ObjectsService
+    private objectsService: ObjectsService,
   ) {}
-
-  @ViewChild('objectsList') objectsList!: ElementRef<HTMLElement>;
-
-  isShowList = true;
 
   ngOnInit() {
     this.objectsService.getObjects().subscribe();
-
-    this.objectsService.hideListSubject.subscribe(() => {
-      if (this.isShowList) {
-        this.hideList();
-      }
-    });
   }
 
-  showList(){
-    this.isShowList = true;
-    this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '1');
-  }
-
-  hideList(){
-    this.isShowList = false;
-    this.renderer.setStyle(this.objectsList.nativeElement, 'zIndex', '0');
-  }
-
-  onToggle() {
-    if (this.isShowList) {
-      this.hideList();
-      return;
-    }
-    this.showList();
-  }
 }

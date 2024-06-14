@@ -34,12 +34,20 @@ export class MapService {
   });
 
   openPopupSubject = new Subject<ObjectData>();
+  toggleShowMapSubject = new Subject<boolean>();
+
+  isShowMap: boolean = true;
 
   private vectorSource: VectorSource | undefined;
   private vectorLayer: VectorLayer<Feature<Geometry>> | undefined;
   private overlay: Overlay | undefined;
 
   constructor(private objectsService: ObjectsService) {}
+
+  toggleShowMap() {
+    this.isShowMap = !this.isShowMap;
+    this.toggleShowMapSubject.next(this.isShowMap);
+  }
 
   createNewVectorSource(): void {
     this.vectorSource = new VectorSource();

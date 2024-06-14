@@ -1,41 +1,42 @@
 .container {
-  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 
   .main {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 114px);
+    min-height: 500px;
     display: flex;
 
     .left-panel {
       flex: 0 0 320px;
+      display: flex;
+      flex-direction: column;
 
       .filters {
         background-color: rgba(128, 128, 128, 0.1);;
         width: 320px;
-        height: 200px;
+        flex: 0 0 200px;
         padding: 0 20px;
       }
 
       .objects-list {
-        height: calc(100vh - 300px);
         z-index: 1;
         overflow: auto;
       }
     }
 
     .map {
-      height: 100%;
       width: 100%;
-      flex-grow: 1;
     }
 
     .toggle {
       position: fixed;
-      top: 80px;
+      top: 70px;
       right: 30px;
       z-index: 10;
       background-color: transparent;
@@ -48,30 +49,33 @@
 
   @media (max-width: 700px) {
     .main {
-      display: block;
+      flex-direction: column;
+      flex: 1 1 auto;
 
       .left-panel {
         width: 100%;
+        flex: 1 1 auto;
+        overflow: auto;
+        // scrollbar-gutter: stable;
 
         .filters {
-          position: fixed;
           width: 100vw;
         }
   
         .objects-list {
-          position: fixed;
           background-color: white;
-          top: 250px;
-          left: 0;
           width: 100vw;
-          height: calc(100vh - 300px);
+          flex: 1 1 auto;
         }
       }
 
       .map {
-        position: relative;
-        top: 200px;
-        height: calc(100vh - 250px);
+        position: fixed;
+        top: 264px;
+        left: 0;
+        height: calc(100vh - 314px);
+        width: 100vw;
+        z-index: 1;
 
         &::before {
           content: "";

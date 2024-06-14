@@ -19,13 +19,18 @@
       flex-grow: 1;
     }
 
-    .reset-filters {
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      transform: scale(1.5);
-      position: relative;
-      top: 10px;
+    .btns {
+      display: flex;
+
+      .reset-filters {
+        position: relative;
+        top: 8px;
+        transform: scale(1.5);
+      }
+  
+      .toggle-map {
+        display: none;
+      }
     }
   }
 }
@@ -35,14 +40,25 @@
     padding: 0;
 
     .search-container {
-      padding-right: 90px;
+      padding-right: 20px;
 
       mat-form-field {
         margin-right: 30px;
       }
 
-      .reset-filters {
-        transform: scale(2);
+      .btns {
+        gap: 40px;
+
+        .reset-filters {
+          transform: scale(2);
+        }
+  
+        .toggle-map {
+          display: block;
+          position: relative;
+          top: 8px;
+          transform: scale(2);
+        }
       }
     }
   }

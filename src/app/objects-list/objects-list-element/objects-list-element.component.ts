@@ -27,6 +27,6 @@ export class ObjectsListElementComponent {
   onAnimateToView(clickEvent: any) {
     clickEvent.stopPropagation();
     this.mapService.onAnimateToView(this.objectData!);
-    this.objectsService.hideListSubject.next();
+    this.mapService.toggleShowMap();
   }
 }

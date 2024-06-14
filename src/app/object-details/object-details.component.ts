@@ -58,7 +58,7 @@ export class ObjectDetailsComponent {
 
   onAnimateToView(): void {
     this.router.navigate(['/']);
-    this.objectsService.hideListSubject.next();
+    this.mapService.toggleShowMap();
     this.mapService.onAnimateToView(this.objectData!);
   }
 

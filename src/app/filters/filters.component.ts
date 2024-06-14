@@ -10,6 +10,7 @@ import { switchMap } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MapService } from '../_services/map/map.service';
 
 @Component({
   selector: 'app-filters',
@@ -22,17 +23,22 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     MatTooltipModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
 })
 export class FiltersComponent {
-  constructor(private objectsService: ObjectsService) {}
+  constructor(
+    private objectsService: ObjectsService,
+    private mapService: MapService
+  ) {}
 
   searchInput: string = '';
   typeSelect: string = '';
   countrySelect: string = '';
+
+  isShowList: boolean = false;
 
   countries: string[] = [];
   categories: string[] = Object.keys(ObjectCategory);
@@ -59,7 +65,7 @@ export class FiltersComponent {
   }
 
   isFiltersEmpty(): boolean {
-    return (!this.searchInput && !this.typeSelect && !this.countrySelect);
+    return !this.searchInput && !this.typeSelect && !this.countrySelect;
   }
 
   onResetFilters(): void {
@@ -68,5 +74,9 @@ export class FiltersComponent {
     this.typeSelect = '';
     this.countrySelect = '';
     this.onFilterChange();
+  }
+
+  onToggleShowMap() {
+    this.mapService.toggleShowMap();
   }
 }
