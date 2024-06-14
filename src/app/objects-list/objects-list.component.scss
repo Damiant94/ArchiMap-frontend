@@ -4,6 +4,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   background-color: white;
+
+  .no-objects-found {
+    text-align: center;
+    margin-top: 20px;
+  }
 }
 
 @media (max-width: 700px) {
