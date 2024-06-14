@@ -1,7 +1,26 @@
 .container {
-    height: 50px;
-    background-color: gray;
-    color: white;
-    z-index: 11;
-    position: relative;
+  height: 50px;
+  background-color: gray;
+  color: white;
+  z-index: 11;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+  padding: 0 10px;
+
+  .creator {
+    line-height: 1rem;
+    font-size: 0.8rem;
+
+    .name {
+        font-size: 0.8rem;
+    }
+
+  }
+
+  .links {
+    display: flex;
+  }
 }
