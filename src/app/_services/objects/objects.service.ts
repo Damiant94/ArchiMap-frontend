@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class ObjectsService {
   }
 
   getObjects(): Observable<ObjectData[]> {
-    return this.http.get<any>(`http://localhost:8080/feed/get-objects`).pipe(
+    return this.http.get<any>(`${environment.urlApi}/feed/get-objects`).pipe(
       tap((objects: ObjectData[]) => {
         this.objects = objects;
         this.emitNewFilteredObjects();
@@ -43,16 +44,16 @@ export class ObjectsService {
   }
 
   getObjectById(id: string): Observable<ObjectData> {
-    return this.http.get<any>(`http://localhost:8080/feed/get-object/${id}`);
+    return this.http.get<any>(`${environment.urlApi}/feed/get-object/${id}`);
   }
 
   getCountries(): Observable<string[]> {
-    return this.http.get<any>(`http://localhost:8080/feed/get-countries`);
+    return this.http.get<any>(`${environment.urlApi}/feed/get-countries`);
   }
 
   addNewObject(objectData: ObjectData): Subscription {
     return this.http
-      .post<any>(`http://localhost:8080/feed/add-object/`, objectData)
+      .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
       .subscribe({
         next: () => {
           this.getObjects().subscribe(() => {
