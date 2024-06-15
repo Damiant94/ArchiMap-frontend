@@ -24,7 +24,7 @@ import Map from 'ol/Map';
 })
 export class MapComponent implements AfterViewInit {
   @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
-  
+
   objectData: ObjectData | undefined;
 
   private map: Map | undefined;
