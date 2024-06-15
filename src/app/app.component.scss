@@ -1,5 +1,5 @@
 .container {
-  max-height: 100vh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -7,7 +7,7 @@
   .main {
     position: relative;
     width: 100%;
-    height: calc(100vh - 114px);
+    height: calc(100dvh - 114px);
     display: flex;
 
     .left-panel {
@@ -71,7 +71,7 @@
         position: fixed;
         top: 264px;
         left: 0;
-        height: calc(100% - 314px);
+        height: calc(100dvh - 314px);
         width: 100%;
         z-index: 1;
 

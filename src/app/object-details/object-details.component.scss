@@ -9,7 +9,7 @@
   max-width: 800px;
   border-radius: 20px;
   padding: 30px;
-  max-height: 90%;
+  max-height: 90dvh;
   overflow: auto;
   scrollbar-gutter: stable both-edges;
 
@@ -95,8 +95,8 @@
 @media (max-width: 700px) {
   .container {
     width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     border-radius: 0;
     overflow: auto;
 

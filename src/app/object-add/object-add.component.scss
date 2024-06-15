@@ -10,7 +10,7 @@
   border-radius: 20px;
   padding: 30px;
   padding-top: 60px;
-  max-height: 90%;
+  max-height: 90dvh;
   overflow: auto;
   scrollbar-gutter: stable both-edges;
 
@@ -122,8 +122,8 @@
   .container {
     padding: 0;
     width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100d;
+    max-height: 100dvh;
     border-radius: 0;
     overflow: auto;
     padding-top: 70px;
