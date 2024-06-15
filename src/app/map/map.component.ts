@@ -20,7 +20,7 @@ import Map from 'ol/Map';
   imports: [MapPopupComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
   @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
