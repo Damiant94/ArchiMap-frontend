@@ -30,7 +30,7 @@
   </div>
   <mat-form-field appearance="outline" class="select-category">
     <mat-label>Category</mat-label>
-    <mat-select [(ngModel)]="typeSelect" (selectionChange)="onFilterChange()">
+    <mat-select [(ngModel)]="categorySelect" (selectionChange)="onFilterChange()">
       <mat-option value="">Any</mat-option>
       @for (category of categories; track category) {
       <mat-option value="{{ category }}">{{ category | titlecase }}</mat-option>

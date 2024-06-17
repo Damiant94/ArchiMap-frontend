@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ObjectCategory } from '../_models/objectData';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
-import { switchMap } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +35,7 @@ export class FiltersComponent {
   ) {}
 
   searchInput: string = '';
-  typeSelect: string = '';
+  categorySelect: string = '';
   countrySelect: string = '';
 
   isShowList: boolean = false;
@@ -43,16 +43,23 @@ export class FiltersComponent {
   countries: string[] = [];
   categories: string[] = Object.keys(ObjectCategory);
 
+  private objectsChangedSubscription: Subscription | undefined;
+  private countriesCheckSubscription: Subscription | undefined;
+
   onFilterChange() {
-    this.objectsService.filtersSubject.next({
+    this.objectsService.filtersChangedSubject.next(this.filtersValue)
+  }
+
+  get filtersValue() {
+    return {
       search: this.searchInput,
-      type: this.typeSelect,
+      category: this.categorySelect,
       country: this.countrySelect,
-    });
+    };
   }
 
   ngOnInit() {
-    this.objectsService.objectsChangedSubject
+    this.countriesCheckSubscription = this.objectsService.countriesCheckSubject
       .pipe(switchMap(() => this.objectsService.getCountries()))
       .subscribe({
         next: (countries) => {
@@ -62,21 +69,34 @@ export class FiltersComponent {
           console.log(err);
         },
       });
+    this.objectsService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries = countries;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 
   isFiltersEmpty(): boolean {
-    return !this.searchInput && !this.typeSelect && !this.countrySelect;
+    return !this.searchInput && !this.categorySelect && !this.countrySelect;
   }
 
   onResetFilters(): void {
     if (this.isFiltersEmpty()) return;
     this.searchInput = '';
-    this.typeSelect = '';
+    this.categorySelect = '';
     this.countrySelect = '';
     this.onFilterChange();
   }
 
   onToggleShowMap() {
     this.mapService.toggleShowMap();
+  }
+
+  ngOnDestroy() {
+    this.objectsChangedSubscription?.unsubscribe();
+    this.countriesCheckSubscription?.unsubscribe();
   }
 }

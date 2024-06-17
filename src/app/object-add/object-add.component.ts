@@ -10,7 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { debounceTime } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
@@ -74,6 +74,8 @@ export class ObjectAddComponent {
 
   categories: string[] = Object.keys(ObjectCategory);
 
+  private searchFormValueSubscription: Subscription | undefined;
+
   constructor(
     private formBuilder: FormBuilder,
     private mapService: MapService,
@@ -125,7 +127,7 @@ export class ObjectAddComponent {
       search: [''],
     });
 
-    this.searchForm.valueChanges
+    this.searchFormValueSubscription = this.searchForm.valueChanges
       .pipe(debounceTime(500))
       .subscribe(({ search }) => {
         this.onSearch(search);
@@ -295,5 +297,9 @@ export class ObjectAddComponent {
 
   onClose(): void {
     this.router.navigate(['/']);
+  }
+
+  ngOnDestroy() {
+    this.searchFormValueSubscription?.unsubscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
@@ -10,6 +10,7 @@ import { ObjectDetailsComponent } from './object-details/object-details.componen
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ObjectsService } from './_services/objects/objects.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +35,13 @@ export class AppComponent {
     private objectsService: ObjectsService,
   ) {}
 
+  private getObjectsSubscription: Subscription | undefined;
+
   ngOnInit() {
-    this.objectsService.getObjects().subscribe();
+    this.getObjectsSubscription = this.objectsService.getObjects().subscribe();
   }
 
+  ngOnDestroy() {
+    this.getObjectsSubscription?.unsubscribe();
+  }
 }

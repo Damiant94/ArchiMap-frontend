@@ -58,11 +58,13 @@ export class ObjectDetailsComponent {
 
   onAnimateToView(): void {
     this.router.navigate(['/']);
-    this.mapService.toggleShowMap();
+    if (!this.mapService.isShowMap) {
+      this.mapService.toggleShowMap();
+    }
     this.mapService.onAnimateToView(this.objectData!);
   }
 
   onClose(): void {
-    this.router.navigate(["/"]);
+    this.router.navigate(['/']);
   }
 }

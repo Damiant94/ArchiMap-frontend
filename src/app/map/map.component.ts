@@ -13,6 +13,7 @@ import { MapService } from '../_services/map/map.service';
 import { MapPopupComponent } from './map-popup/map-popup.component';
 
 import Map from 'ol/Map';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -28,6 +29,9 @@ export class MapComponent implements AfterViewInit {
   objectData: ObjectData | undefined;
 
   private map: Map | undefined;
+
+  private toggleShowMapSubscription: Subscription | undefined;
+  private openPopupSubscription: Subscription | undefined;
 
   constructor(
     private elementRef: ElementRef,
@@ -88,5 +92,10 @@ export class MapComponent implements AfterViewInit {
 
   hideMap() {
     this.renderer.setStyle(this.elementRef.nativeElement.parentNode, 'zIndex', '0');
+  }
+
+  ngOnDestroy() {
+    this.toggleShowMapSubscription?.unsubscribe();
+    this.openPopupSubscription?.unsubscribe();
   }
 }

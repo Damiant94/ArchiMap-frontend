@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ObjectCategory, ObjectData } from '../../_models/objectData';
-import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  Subscription,
+  debounce,
+  map,
+  tap,
+  timer,
+} from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -10,37 +18,65 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ObjectsService {
-  filtersSubject = new Subject<Filters>();
-  objectsChangedSubject = new BehaviorSubject<ObjectData[]>([]);
+  filtersChangedSubject = new Subject<Filters>();
+  objectsChangedSubject = new Subject<ObjectData[]>();
+  countriesCheckSubject = new Subject<void>();
 
-  objects: ObjectData[] = [];
-  filteredObjects: ObjectData[] = [];
+  private filtersChangedSubscription: Subscription | undefined;
+
+  filteredObjects: ObjectData[] | undefined;
 
   private filters: Filters = {
     search: '',
-    type: '',
+    category: '',
     country: '',
   };
 
+  private debounceTime = 500;
+
   constructor(private http: HttpClient, private router: Router) {
-    this.filtersSubject.subscribe((filters: Filters) => {
-      this.filters = filters;
-      this.emitNewFilteredObjects();
-    });
-  }
-
-  emitNewFilteredObjects(): void {
-    this.filterObjects();
-    this.objectsChangedSubject.next(this.filteredObjects);
-  }
-
-  getObjects(): Observable<ObjectData[]> {
-    return this.http.get<any>(`${environment.urlApi}/feed/get-objects`).pipe(
-      tap((objects: ObjectData[]) => {
-        this.objects = objects;
+    this.filtersChangedSubject
+      .pipe(
+        tap((filters) => {
+          if (filters.search === this.filters.search) {
+            this.debounceTime = 0;
+          } else {
+            this.debounceTime = 500;
+          }
+        }),
+        debounce(() => timer(this.debounceTime))
+      )
+      .subscribe((filters: Filters) => {
+        this.filters = filters;
+        this.getObjects().subscribe();
         this.emitNewFilteredObjects();
-      })
-    );
+      });
+  }
+
+  getObjects(query: any = {}): Observable<ObjectData[]> {
+    let params: any = {};
+    if (query.querySearch) {
+      params.querySearch = query.querySearch;
+    }
+    if (query.category) {
+      params.category = query.category;
+    }
+    if (query.country) {
+      params.country = query.country;
+    }
+    return this.http
+      .get<any>(`${environment.urlApi}/feed/get-objects`, { params: params })
+      .pipe(map((results) => this.filterObjects(results)))
+      .pipe(
+        tap((filteredObjects) => {
+          this.filteredObjects = filteredObjects;
+          this.emitNewFilteredObjects();
+        })
+      );
+  }
+
+  emitNewFilteredObjects() {
+    this.objectsChangedSubject.next(this.filteredObjects!);
   }
 
   getObjectById(id: string): Observable<ObjectData> {
@@ -56,7 +92,7 @@ export class ObjectsService {
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
       .subscribe({
         next: () => {
-          this.getObjects().subscribe(() => {
+          this.getObjects(this.filters).subscribe(() => {
             this.router.navigate(['/']);
           });
         },
@@ -66,15 +102,16 @@ export class ObjectsService {
       });
   }
 
-  filterObjects(): void {
-    this.filteredObjects = this.objects.filter((object: ObjectData) => {
+  filterObjects(objects: ObjectData[]): ObjectData[] {
+    return objects.filter((object: ObjectData) => {
       return (
         (object.name
           .toLowerCase()
           .includes(this.filters.search.toLowerCase()) ||
           this.filters.search === '') &&
-        (object.category.toLowerCase() === this.filters.type.toLowerCase() ||
-          this.filters.type === '') &&
+        (object.category.toLowerCase() ===
+          this.filters.category.toLowerCase() ||
+          this.filters.category === '') &&
         (object.location.country.toLowerCase() ===
           this.filters.country.toLowerCase() ||
           this.filters.country === '')
@@ -99,5 +136,9 @@ export class ObjectsService {
       default:
         return 'mapIcons/other.png';
     }
+  }
+
+  ngOnDestroy() {
+    this.filtersChangedSubscription?.unsubscribe();
   }
 }

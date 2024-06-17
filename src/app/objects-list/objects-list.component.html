@@ -1,7 +1,12 @@
 <div class="container">
-  @for (object of objects; track object._id; let last = $last) {
-  <app-objects-list-element [objectData]="object" [isLast]="last" />
-  } @if (objects?.length===0) {
-  <div class="no-objects-found">No objects found</div>
+  @if (isLoading) {
+    Loading...
+  }
+  @else {
+    @for (object of objects; track object._id; let last = $last) {
+      <app-objects-list-element [objectData]="object" [isLast]="last" />
+    } @empty {
+      <div class="no-objects-found">No objects found</div>
+    }
   }
 </div>

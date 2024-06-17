@@ -1,5 +1,5 @@
 export interface Filters {
   search: string;
-  type: string;
+  category: string;
   country: string;
 }
