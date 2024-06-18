@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ObjectCategory, ObjectData } from '../../_models/objectData';
 import {
-  Observable,
-  Subject,
-  Subscription,
-  debounce,
-  map,
-  tap,
-  timer,
-} from 'rxjs';
+  ObjectCategory,
+  ObjectData,
+  ObjectDataMap,
+} from '../../_models/objectData';
+import { Observable, Subject, Subscription, debounce, tap, timer } from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -20,11 +16,15 @@ import { environment } from '../../../environments/environment';
 export class ObjectsService {
   filtersChangedSubject = new Subject<Filters>();
   objectsChangedSubject = new Subject<ObjectData[]>();
+  objectsForMapChangedSubject = new Subject<ObjectDataMap[]>();
   countriesCheckSubject = new Subject<void>();
 
   private filtersChangedSubscription: Subscription | undefined;
 
-  filteredObjects: ObjectData[] | undefined;
+  page: number = 1;
+  scrollFetchingBlocked = false;
+  objects: ObjectData[] | undefined;
+  objectsForMap: ObjectDataMap[] | undefined;
 
   private filters: Filters = {
     search: '',
@@ -48,15 +48,58 @@ export class ObjectsService {
       )
       .subscribe((filters: Filters) => {
         this.filters = filters;
+        this.page = 1;
+        this.scrollFetchingBlocked = false;
         this.getObjects().subscribe();
-        this.emitNewFilteredObjects();
+        this.getObjectsForMap().subscribe();
       });
   }
 
-  getObjects(query: any = {}): Observable<ObjectData[]> {
+  setNextPage() {
+    this.page++;
+  }
+
+  getObjects(): Observable<ObjectData[]> {
+    let params = this.getQueryParams();
+    params.page = this.page;
+    return this.http
+      .get<any>(`${environment.urlApi}/feed/get-objects`, { params: params })
+      .pipe(
+        tap((objects) => {
+          if (this.page === 1) {
+            this.objects = objects;
+            this.emitNewObjects();
+          } else {
+            if (objects.length === 0) {
+              this.scrollFetchingBlocked = true;
+            } else {
+              this.objects = this.objects?.concat(objects);
+              this.emitNewObjects();
+            }
+          }
+        })
+      );
+  }
+
+  getObjectsForMap(): Observable<ObjectDataMap[]> {
+    const params = this.getQueryParams();
+    return this.http
+      .get<any>(`${environment.urlApi}/feed/get-objects-for-map`, {
+        params: params,
+      })
+      .pipe(
+        tap((objects) => {
+          this.objectsForMap = objects;
+          this.emitNewObjectsForMap();
+        })
+      );
+  }
+
+  getQueryParams() {
+    const query = this.filters;
     let params: any = {};
-    if (query.querySearch) {
-      params.querySearch = query.querySearch;
+    if (query.search) {
+      params.querySearch = query.search;
     }
     if (query.category) {
       params.category = query.category;
@@ -64,19 +107,15 @@ export class ObjectsService {
     if (query.country) {
       params.country = query.country;
     }
-    return this.http
-      .get<any>(`${environment.urlApi}/feed/get-objects`, { params: params })
-      .pipe(map((results) => this.filterObjects(results)))
-      .pipe(
-        tap((filteredObjects) => {
-          this.filteredObjects = filteredObjects;
-          this.emitNewFilteredObjects();
-        })
-      );
+    return params;
   }
 
-  emitNewFilteredObjects() {
-    this.objectsChangedSubject.next(this.filteredObjects!);
+  emitNewObjects() {
+    this.objectsChangedSubject.next(this.objects!);
+  }
+
+  emitNewObjectsForMap() {
+    this.objectsForMapChangedSubject.next(this.objectsForMap!);
   }
 
   getObjectById(id: string): Observable<ObjectData> {
@@ -92,7 +131,7 @@ export class ObjectsService {
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
       .subscribe({
         next: () => {
-          this.getObjects(this.filters).subscribe(() => {
+          this.getObjects().subscribe(() => {
             this.router.navigate(['/']);
           });
         },
@@ -100,23 +139,6 @@ export class ObjectsService {
           console.log(err);
         },
       });
-  }
-
-  filterObjects(objects: ObjectData[]): ObjectData[] {
-    return objects.filter((object: ObjectData) => {
-      return (
-        (object.name
-          .toLowerCase()
-          .includes(this.filters.search.toLowerCase()) ||
-          this.filters.search === '') &&
-        (object.category.toLowerCase() ===
-          this.filters.category.toLowerCase() ||
-          this.filters.category === '') &&
-        (object.location.country.toLowerCase() ===
-          this.filters.country.toLowerCase() ||
-          this.filters.country === '')
-      );
-    });
   }
 
   getObjectCategoryIconUrl(category: ObjectCategory | undefined): string {

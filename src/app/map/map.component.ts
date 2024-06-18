@@ -7,13 +7,13 @@ import {
   Renderer2,
 } from '@angular/core';
 
-import { ObjectData } from '../_models/objectData';
+import { ObjectData, ObjectDataMap } from '../_models/objectData';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { MapService } from '../_services/map/map.service';
 import { MapPopupComponent } from './map-popup/map-popup.component';
 
 import Map from 'ol/Map';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -54,13 +54,19 @@ export class MapComponent implements AfterViewInit {
     this.map = this.mapService.getMap();
     this.map.setTarget(this.elementRef.nativeElement);
 
-    this.mapService.openPopupSubject.subscribe((objectData: ObjectData) => {
-      this.objectData = objectData;
-    });
+    this.openPopupSubscription = this.mapService.openPopupSubject
+      .pipe(
+        switchMap((objectData: ObjectDataMap) =>
+          this.objectsService.getObjectById(objectData.id)
+        )
+      )
+      .subscribe((objectData: ObjectData) => {
+        this.objectData = objectData;
+      });
 
     this.mapService.createNewVectorSource();
-    this.objectsService.objectsChangedSubject.subscribe(
-      (objects: ObjectData[] | undefined) => {
+    this.objectsService.objectsForMapChangedSubject.subscribe(
+      (objects: ObjectDataMap[] | undefined) => {
         this.mapService.createMarkers(objects);
       }
     );
@@ -86,12 +92,20 @@ export class MapComponent implements AfterViewInit {
   }
 
   showMap() {
-    document.parentElement
-    this.renderer.setStyle(this.elementRef.nativeElement.parentNode, 'zIndex', '1');
+    document.parentElement;
+    this.renderer.setStyle(
+      this.elementRef.nativeElement.parentNode,
+      'zIndex',
+      '1'
+    );
   }
 
   hideMap() {
-    this.renderer.setStyle(this.elementRef.nativeElement.parentNode, 'zIndex', '0');
+    this.renderer.setStyle(
+      this.elementRef.nativeElement.parentNode,
+      'zIndex',
+      '0'
+    );
   }
 
   ngOnDestroy() {

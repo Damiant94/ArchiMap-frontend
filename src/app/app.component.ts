@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
@@ -25,23 +25,28 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     ObjectDetailsComponent,
     MatButtonModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
   constructor(
     private objectsService: ObjectsService,
-  ) {}
+  ) {
+  }
 
   private getObjectsSubscription: Subscription | undefined;
+  private getObjectsForMapSubscription: Subscription | undefined;
 
   ngOnInit() {
     this.getObjectsSubscription = this.objectsService.getObjects().subscribe();
+    this.getObjectsForMapSubscription = this.objectsService.getObjectsForMap().subscribe();
   }
 
   ngOnDestroy() {
     this.getObjectsSubscription?.unsubscribe();
+    this.getObjectsForMapSubscription?.unsubscribe();
   }
 }

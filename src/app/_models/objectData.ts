@@ -12,6 +12,12 @@ export interface ObjectData {
   imageUrl?: string;
 }
 
+export interface ObjectDataMap {
+  id: string;
+  coordinateLonLat: number[];
+  category: ObjectCategory;
+}
+
 export enum ObjectCategory {
   CATHEDRAL = 'CATHEDRAL',
   APARTMENT = 'APARTMENT',

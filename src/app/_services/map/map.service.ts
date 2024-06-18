@@ -12,7 +12,7 @@ import VectorLayer from 'ol/layer/Vector';
 import { Geometry, Point } from 'ol/geom';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
-import { ObjectData } from '../../_models/objectData';
+import { ObjectData, ObjectDataMap } from '../../_models/objectData';
 import { Icon, Style } from 'ol/style';
 import { ObjectsService } from '../objects/objects.service';
 import { Subject } from 'rxjs';
@@ -33,7 +33,7 @@ export class MapService {
     ],
   });
 
-  openPopupSubject = new Subject<ObjectData>();
+  openPopupSubject = new Subject<ObjectDataMap>();
   toggleShowMapSubject = new Subject<boolean>();
 
   isShowMap: boolean = true;
@@ -67,9 +67,9 @@ export class MapService {
 
   setPopupContainer(feature: FeatureLike): void {
     const coordinates = (feature.getGeometry() as Point).getCoordinates();
-    const objectData: ObjectData = feature.get('objectData');
+    const objectDataMap: ObjectDataMap = feature.get('ObjectDataMap');
     this.overlay!.setPosition(coordinates);
-    this.openPopupSubject.next(objectData);
+    this.openPopupSubject.next(objectDataMap);
   }
 
   removePopupContainer(): void {
@@ -110,20 +110,20 @@ export class MapService {
     );
   }
 
-  createMarkers(objects: ObjectData[] | undefined): void {
+  createMarkers(objects: ObjectDataMap[] | undefined): void {
     this.vectorSource?.refresh();
 
-    objects?.forEach((object: ObjectData): void => {
+    objects?.forEach((object: ObjectDataMap): void => {
       this.createMarker(object);
     });
   }
 
-  createMarker(object: ObjectData): void {
-    const cordinate: Coordinate = fromLonLat(object.location.coordinateLonLat);
+  createMarker(object: ObjectDataMap): void {
+    const cordinate: Coordinate = fromLonLat(object.coordinateLonLat);
 
     const markerFeature = new Feature({
       geometry: new Point(cordinate),
-      objectData: { ...object },
+      ObjectDataMap: { ...object },
     });
 
     const markerStyle = new Style({
