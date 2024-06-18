@@ -57,6 +57,7 @@ import { Address } from '../_models/geoData';
 })
 export class ObjectAddComponent {
   @ViewChild('mapContainer') mapContainer: ElementRef | undefined;
+  @ViewChild('searchInput') searchInput: ElementRef | undefined;
 
   addObjectForm1stage!: FormGroup;
   addObjectForm2stage!: FormGroup;
@@ -153,14 +154,16 @@ export class ObjectAddComponent {
       this.searchValuePlaces = [];
       return;
     }
-    this.geoDataService.getAddresses(searchQuery).subscribe((result: Address[]) => {
-      this.searchValuePlaces = result;
+    this.geoDataService
+      .getAddresses(searchQuery)
+      .subscribe((result: Address[]) => {
+        this.searchValuePlaces = result;
 
-      if (result.length === 0) {
-        this.searchForm.get('search')?.setErrors({ noPlaceFound: true });
-        this.searchForm.get('search')?.markAsTouched();
-      }
-    });
+        if (result.length === 0) {
+          this.searchForm.get('search')?.setErrors({ noPlaceFound: true });
+          this.searchForm.get('search')?.markAsTouched();
+        }
+      });
   }
 
   getOptionText(option: any) {
@@ -168,6 +171,9 @@ export class ObjectAddComponent {
   }
 
   onSearchPlaceSelect(event: any): void {
+    setTimeout(() => {
+      this.searchInput?.nativeElement.blur();
+    }, 0);
     const lon = +event.option.value.lon;
     const lat = +event.option.value.lat;
     const coordinate = fromLonLat([lon, lat]);
