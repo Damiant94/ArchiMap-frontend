@@ -8,28 +8,31 @@
     position: relative;
     width: 100%;
     height: calc(100dvh - 114px);
-    display: flex;
-
-    .left-panel {
-      flex: 0 0 320px;
-      display: flex;
-      flex-direction: column;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 200px;
 
       .filters {
         background-color: rgba(128, 128, 128, 0.1);;
-        width: 320px;
-        flex: 0 0 200px;
         padding: 0 20px;
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 1;
       }
 
       .objects-list {
         z-index: 1;
         overflow: auto;
+        grid-column: 1 / span 1;
+        grid-row: 2 / span 1;
+        align-items: center;
       }
-    }
 
     .map {
       width: 100%;
+
+      grid-column: 2 / span 1;
+      grid-row: 1 / span 2;
+      z-index: 1;
     }
 
     .toggle {
@@ -47,14 +50,7 @@
 
   @media (max-width: 700px) {
     .main {
-      flex-direction: column;
-      flex: 1 1 auto;
-
-      .left-panel {
-        width: 100%;
-        flex: 1 1 auto;
-        overflow: auto;
-        // scrollbar-gutter: stable;
+      grid-template-columns: 1fr;
 
         .filters {
           width: 100vw;
@@ -65,15 +61,11 @@
           width: 100vw;
           flex: 1 1 auto;
         }
-      }
 
       .map {
-        position: fixed;
-        top: 264px;
-        left: 0;
-        height: calc(100dvh - 314px);
-        width: 100%;
-        z-index: 1;
+        position: relative;
+        grid-column: 1 / span 1;
+        grid-row: 2 / span 1;
 
         &::before {
           content: "";
