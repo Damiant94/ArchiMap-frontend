@@ -34,6 +34,7 @@ import { Geometry, Point } from 'ol/geom';
 import Feature from 'ol/Feature';
 import { Icon, Style } from 'ol/style';
 import { easeOut } from 'ol/easing';
+import { Address } from '../_models/geoData';
 
 @Component({
   selector: 'app-object-add',
@@ -61,7 +62,7 @@ export class ObjectAddComponent {
   addObjectForm2stage!: FormGroup;
   searchForm!: FormGroup;
 
-  searchValuePlaces: any[] = [];
+  searchValuePlaces: Address[] = [];
 
   country: string | undefined;
   place: string | undefined;
@@ -152,7 +153,7 @@ export class ObjectAddComponent {
       this.searchValuePlaces = [];
       return;
     }
-    this.geoDataService.getAddresses(searchQuery).subscribe((result: any[]) => {
+    this.geoDataService.getAddresses(searchQuery).subscribe((result: Address[]) => {
       this.searchValuePlaces = result;
 
       if (result.length === 0) {

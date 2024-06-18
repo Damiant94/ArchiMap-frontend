@@ -2,12 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Coordinate } from 'ol/coordinate';
-import { Observable, debounceTime, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { Address, Location } from '../../_models/geoData';
 
-interface GeoData {
-  place: string;
-  countryName: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -24,15 +21,15 @@ export class GeoDataService {
   }
 
   private getAddressesUrl(searchQuery: string): string {
-    // 'eiffel+tower'
+    // 'eiffel+tower' or 'eiffel%20tower'
     return `https://nominatim.openstreetmap.org/search?q=${searchQuery}&format=json&accept-language=en`;
   }
 
-  getGeoData(coordinateLatLon: Coordinate): Observable<GeoData> {
+  getGeoData(coordinateLatLon: Coordinate): Observable<Location> {
     return this.http.get<any>(this.getReverseUrl(coordinateLatLon)).pipe(
       map((data) => {
         if (data.error) return data.error;
-        const newData = {
+        const newData: Location = {
           place:
             data.address.city ||
             data.address.town ||
@@ -47,7 +44,7 @@ export class GeoDataService {
     );
   }
 
-  getAddresses(searchQuery: string): Observable<any> {
+  getAddresses(searchQuery: string): Observable<Address[]> {
     return this.http
       .get<any>(this.getAddressesUrl(searchQuery))
       .pipe(
