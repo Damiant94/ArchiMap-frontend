@@ -85,7 +85,7 @@ export class MapService {
       {
         center: coordinate,
         zoom: 3,
-        duration: 4000,
+        duration: 0,
         easing: easeOut,
       },
       (isAnimationFinished: boolean) => {
@@ -94,7 +94,7 @@ export class MapService {
             {
               center: coordinate,
               zoom: 15,
-              duration: 4000,
+              duration: 3000,
               easing: easeOut,
             },
             (isAnimationFinished: boolean) => {
