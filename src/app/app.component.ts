@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
 
   private getObjectsSubscription: Subscription | undefined;
   private getObjectsForMapSubscription: Subscription | undefined;
+  private isLoadingMapSubscription: Subscription | undefined;
 
   isLoadingMap = true;
 
@@ -45,7 +46,7 @@ export class AppComponent implements OnInit {
     this.getObjectsForMapSubscription = this.objectsService
       .getObjectsForMap()
       .subscribe();
-    this.objectsService.isLoadingMapSubject.subscribe((isLoadingMap: boolean) => {
+    this.isLoadingMapSubscription = this.objectsService.isLoadingMapSubject.subscribe((isLoadingMap: boolean) => {
       this.isLoadingMap = isLoadingMap;
     })
   }
@@ -53,5 +54,6 @@ export class AppComponent implements OnInit {
   ngOnDestroy() {
     this.getObjectsSubscription?.unsubscribe();
     this.getObjectsForMapSubscription?.unsubscribe();
+    this.isLoadingMapSubscription?.unsubscribe();
   }
 }

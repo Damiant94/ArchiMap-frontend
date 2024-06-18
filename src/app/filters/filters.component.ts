@@ -39,12 +39,16 @@ export class FiltersComponent {
   countrySelect: string = '';
 
   isShowList: boolean = false;
+  isLoadingMap: boolean = true;
+  isLoadingList: boolean = true;
 
   countries: string[] = [];
   categories: string[] = Object.keys(ObjectCategory);
 
   private objectsChangedSubscription: Subscription | undefined;
   private countriesCheckSubscription: Subscription | undefined;
+  private isLoadingListSubscription: Subscription | undefined;
+  private isLoadingMapSubscription: Subscription | undefined;
 
   onFilterChange() {
     this.objectsService.filtersChangedSubject.next(this.filtersValue)
@@ -59,6 +63,12 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
+    this.isLoadingListSubscription = this.objectsService.isLoadingListSubject.subscribe(
+      (isLoadingList) => this.isLoadingList = isLoadingList
+    )
+    this.isLoadingMapSubscription = this.objectsService.isLoadingMapSubject.subscribe(
+      (isLoadingMap) => this.isLoadingMap = isLoadingMap
+    )
     this.countriesCheckSubscription = this.objectsService.countriesCheckSubject
       .pipe(switchMap(() => this.objectsService.getCountries()))
       .subscribe({
@@ -98,5 +108,7 @@ export class FiltersComponent {
   ngOnDestroy() {
     this.objectsChangedSubscription?.unsubscribe();
     this.countriesCheckSubscription?.unsubscribe();
+    this.isLoadingListSubscription?.unsubscribe();
+    this.isLoadingMapSubscription?.unsubscribe();
   }
 }

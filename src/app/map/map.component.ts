@@ -34,6 +34,7 @@ export class MapComponent implements AfterViewInit {
 
   private toggleShowMapSubscription: Subscription | undefined;
   private openPopupSubscription: Subscription | undefined;
+  private objectsForMapChangedSubscription: Subscription | undefined;
 
   constructor(
     private elementRef: ElementRef,
@@ -43,7 +44,7 @@ export class MapComponent implements AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.mapService.toggleShowMapSubject.subscribe((isShowMap) => {
+    this.toggleShowMapSubscription = this.mapService.toggleShowMapSubject.subscribe((isShowMap) => {
       if (isShowMap) {
         this.showMap();
       } else {
@@ -67,7 +68,7 @@ export class MapComponent implements AfterViewInit {
       });
 
     this.mapService.createNewVectorSource();
-    this.objectsService.objectsForMapChangedSubject.subscribe(
+    this.objectsForMapChangedSubscription = this.objectsService.objectsForMapChangedSubject.subscribe(
       (objects: ObjectDataMap[] | undefined) => {
         this.mapService.createMarkers(objects);
       }
@@ -114,5 +115,6 @@ export class MapComponent implements AfterViewInit {
   ngOnDestroy() {
     this.toggleShowMapSubscription?.unsubscribe();
     this.openPopupSubscription?.unsubscribe();
+    this.objectsForMapChangedSubscription?.unsubscribe();
   }
 }
