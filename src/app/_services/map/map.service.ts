@@ -116,6 +116,8 @@ export class MapService {
     objects?.forEach((object: ObjectDataMap): void => {
       this.createMarker(object);
     });
+
+    this.objectsService.isLoadingMapSubject.next(false);
   }
 
   createMarker(object: ObjectDataMap): void {

@@ -4,7 +4,7 @@ import {
   ObjectData,
   ObjectDataMap,
 } from '../../_models/objectData';
-import { Observable, Subject, Subscription, debounce, tap, timer } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, debounce, tap, timer } from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -18,6 +18,8 @@ export class ObjectsService {
   objectsChangedSubject = new Subject<ObjectData[]>();
   objectsForMapChangedSubject = new Subject<ObjectDataMap[]>();
   countriesCheckSubject = new Subject<void>();
+  isLoadingMapSubject = new BehaviorSubject<boolean>(true);
+  isLoadingListSubject = new BehaviorSubject<boolean>(true);
 
   private filtersChangedSubscription: Subscription | undefined;
 
@@ -26,7 +28,7 @@ export class ObjectsService {
   objects: ObjectData[] | undefined;
   objectsForMap: ObjectDataMap[] | undefined;
 
-  private filters: Filters = {
+  filters: Filters = {
     search: '',
     category: '',
     country: '',
@@ -60,6 +62,7 @@ export class ObjectsService {
   }
 
   getObjects(): Observable<ObjectData[]> {
+    this.isLoadingListSubject.next(true);
     let params = this.getQueryParams();
     params.page = this.page;
     return this.http
@@ -82,6 +85,7 @@ export class ObjectsService {
   }
 
   getObjectsForMap(): Observable<ObjectDataMap[]> {
+    this.isLoadingMapSubject.next(true);
     const params = this.getQueryParams();
     return this.http
       .get<any>(`${environment.urlApi}/feed/get-objects-for-map`, {

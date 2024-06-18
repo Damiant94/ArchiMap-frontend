@@ -1,17 +1,28 @@
-<div class="container" (click)="openDetails()" matTooltip="show details" matTooltipShowDelay="500">
-  <div class="image">
-    <img
-      alt="{{ objectData?.name }}"
-      src="{{
-        objectData?.imageUrl ? objectData?.imageUrl : 'logo/building64-2.png'
-      }}"
-    />
-  </div>
-  <div class="content">
-    <div class="name">{{ objectData?.name }}</div>
-    <div class="location">
-      {{ objectData?.location?.country }} / {{ objectData?.location?.place }}
+<div
+  class="container"
+  (click)="openDetails()"
+  matTooltip="show details"
+  matTooltipShowDelay="500"
+>
+  @if (!objectData) {
+    <div class="spinner">
+      <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+  } @else {
+    <div class="image">
+      <img
+        alt="{{ objectData.name }}"
+        src="{{
+          objectData.imageUrl ? objectData.imageUrl : 'logo/building64-2.png'
+        }}"
+      />
+    </div>
+    <div class="content">
+      <div class="name">{{ objectData.name }}</div>
+      <div class="location">
+        {{ objectData.location.country }} / {{ objectData.location.place }}
       </div>
-    <div class="description">{{ objectData?.description }}</div>
-  </div>
+      <div class="description">{{ objectData.description }}</div>
+    </div>
+  }
 </div>

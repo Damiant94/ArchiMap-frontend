@@ -3,11 +3,16 @@ import { ObjectData } from '../../_models/objectData';
 import { ObjectsListElementComponent } from '../../objects-list/objects-list-element/objects-list-element.component';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-map-popup',
   standalone: true,
-  imports: [ObjectsListElementComponent, MatTooltipModule],
+  imports: [
+    ObjectsListElementComponent,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './map-popup.component.html',
   styleUrl: './map-popup.component.scss',
 })

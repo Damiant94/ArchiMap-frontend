@@ -2,12 +2,13 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ObjectsListElementComponent } from './objects-list-element/objects-list-element.component';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { ObjectData } from '../_models/objectData';
-import { Subscription } from 'rxjs';
+import { Subscription, debounce, tap, timer } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-objects-list',
   standalone: true,
-  imports: [ObjectsListElementComponent],
+  imports: [ObjectsListElementComponent, MatProgressSpinnerModule],
   templateUrl: './objects-list.component.html',
   styleUrl: './objects-list.component.scss',
 })
@@ -17,6 +18,7 @@ export class ObjectsListComponent {
 
   objects: ObjectData[] | undefined;
   isLoading: boolean = true;
+  debounceTime = 500;
 
   private objectsChangedSubscription: Subscription | undefined;
 
@@ -29,6 +31,21 @@ export class ObjectsListComponent {
           this.isLoading = false;
         }
       );
+
+    this.objectsService.filtersChangedSubject
+      .pipe(
+        tap((filters) => {
+          if (filters.search === this.objectsService.filters.search) {
+            this.debounceTime = 0;
+          } else {
+            this.debounceTime = 500;
+          }
+        }),
+        debounce(() => timer(this.debounceTime))
+      )
+      .subscribe(() => {
+        this.isLoading = true;
+      });
   }
 
   onScrollBottom(event: any) {

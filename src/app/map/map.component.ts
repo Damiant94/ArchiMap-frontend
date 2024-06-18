@@ -14,11 +14,12 @@ import { MapPopupComponent } from './map-popup/map-popup.component';
 
 import Map from 'ol/Map';
 import { Subscription, switchMap } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [MapPopupComponent],
+  imports: [MapPopupComponent, MatProgressSpinnerModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,7 @@ export class MapComponent implements AfterViewInit {
   objectData: ObjectData | undefined;
 
   private map: Map | undefined;
+  isLoading = true;
 
   private toggleShowMapSubscription: Subscription | undefined;
   private openPopupSubscription: Subscription | undefined;
@@ -84,6 +86,7 @@ export class MapComponent implements AfterViewInit {
       );
 
       if (feature) {
+        this.objectData = undefined;
         this.mapService.setPopupContainer(feature);
       } else {
         this.mapService.removePopupContainer();

@@ -8,30 +8,31 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-
+  @if (!objectData) {
+    <div class="spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
   <div class="main">
     <div class="info">
-      <div class="name">{{ objectData?.name }}</div>
+      <div class="name">{{ objectData.name }}</div>
 
       <mat-divider />
 
       <div class="location">
-        {{ objectData?.location?.country }}, {{ objectData?.location?.place }}
+        {{ objectData.location.country }}, {{ objectData.location.place }}
       </div>
 
       <mat-divider />
       <div class="description">
-        {{ objectData?.description }}
+        {{ objectData.description }}
       </div>
     </div>
 
     <mat-divider />
 
     <div class="image">
-      <img
-        src="{{ objectData?.imageUrl }}"
-        alt="{{ objectData?.name }} image"
-      />
+      <img src="{{ objectData.imageUrl }}" alt="{{ objectData.name }} image" />
     </div>
   </div>
 
@@ -40,9 +41,9 @@
   <div class="additional-info">
     <div class="additional">
       <div class="category">
-        <small>Category:</small> {{ objectData?.category | titlecase }}
+        <small>Category:</small> {{ objectData.category | titlecase }}
         <img
-          src="{{ getObjectCategoryIconUrl(objectData?.category) }}"
+          src="{{ getObjectCategoryIconUrl(objectData.category) }}"
           alt="type-icon"
         />
       </div>
@@ -50,7 +51,7 @@
       <mat-divider />
 
       <div class="username">
-        <small>Added by:</small> {{ objectData?.username }}
+        <small>Added by:</small> {{ objectData.username }}
       </div>
     </div>
 
@@ -76,4 +77,5 @@
       </button>
     </div>
   </div>
+  }
 </div>

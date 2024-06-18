@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MapService } from '../_services/map/map.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-object-details',
@@ -20,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './object-details.component.html',
   styleUrl: './object-details.component.scss',

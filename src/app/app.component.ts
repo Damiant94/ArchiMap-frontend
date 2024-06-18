@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ObjectsService } from './_services/objects/objects.service';
 import { Subscription } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-root',
@@ -25,24 +26,28 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     ObjectDetailsComponent,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-
-  constructor(
-    private objectsService: ObjectsService,
-  ) {
-  }
+  constructor(private objectsService: ObjectsService) {}
 
   private getObjectsSubscription: Subscription | undefined;
   private getObjectsForMapSubscription: Subscription | undefined;
 
+  isLoadingMap = true;
+
   ngOnInit() {
     this.getObjectsSubscription = this.objectsService.getObjects().subscribe();
-    this.getObjectsForMapSubscription = this.objectsService.getObjectsForMap().subscribe();
+    this.getObjectsForMapSubscription = this.objectsService
+      .getObjectsForMap()
+      .subscribe();
+    this.objectsService.isLoadingMapSubject.subscribe((isLoadingMap: boolean) => {
+      this.isLoadingMap = isLoadingMap;
+    })
   }
 
   ngOnDestroy() {
