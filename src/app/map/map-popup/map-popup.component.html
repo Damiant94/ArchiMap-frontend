@@ -1,7 +1,7 @@
 <div
   class="container"
   (click)="openDetails()"
-  matTooltip="show details"
+  [matTooltip]="objectData ? 'show details' : ''"
   matTooltipShowDelay="500"
 >
   @if (!objectData) {
