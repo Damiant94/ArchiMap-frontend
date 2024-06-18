@@ -2,7 +2,7 @@
   <div class="search-container">
     <mat-form-field appearance="outline" class="search">
       <mat-label>Search</mat-label>
-      <input matInput [(ngModel)]="searchInput" (input)="onFilterChange()" />
+      <input matInput [(ngModel)]="searchInput" [disabled]="isLoadingMap || isLoadingList" (input)="onFilterChange()" />
     </mat-form-field>
     <div class="btns">
       <button
@@ -10,7 +10,7 @@
         matTooltip="Reset filters"
         class="reset-filters"
         (click)="onResetFilters()"
-        [disabled]="isFiltersEmpty()"
+        [disabled]="isFiltersEmpty() || isLoadingMap || isLoadingList"
       >
         <mat-icon>restart_alt</mat-icon>
       </button>
@@ -30,7 +30,7 @@
   </div>
   <mat-form-field appearance="outline" class="select-category">
     <mat-label>Category</mat-label>
-    <mat-select [(ngModel)]="categorySelect" (selectionChange)="onFilterChange()">
+    <mat-select [(ngModel)]="categorySelect" [disabled]="isLoadingMap || isLoadingList" (selectionChange)="onFilterChange()">
       <mat-option value="">Any</mat-option>
       @for (category of categories; track category) {
       <mat-option value="{{ category }}">{{ category | titlecase }}</mat-option>
@@ -42,6 +42,7 @@
     <mat-select
       [(ngModel)]="countrySelect"
       (selectionChange)="onFilterChange()"
+      [disabled]="isLoadingMap || isLoadingList"
     >
       <mat-option value="">Any</mat-option>
       @for (country of countries; track country) {

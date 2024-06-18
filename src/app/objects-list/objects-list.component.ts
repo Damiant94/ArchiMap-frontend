@@ -17,18 +17,19 @@ export class ObjectsListComponent {
   constructor(private objectsService: ObjectsService) {}
 
   objects: ObjectData[] | undefined;
-  isLoading: boolean = true;
+  isLoadingList: boolean = true;
   debounceTime = 500;
 
   private objectsChangedSubscription: Subscription | undefined;
 
   ngOnInit() {
-    this.isLoading = true;
+    this.isLoadingList = true;
     this.objectsChangedSubscription =
       this.objectsService.objectsChangedSubject.subscribe(
         (objects: ObjectData[] | undefined) => {
           this.objects = objects;
-          this.isLoading = false;
+          this.isLoadingList = false;
+          this.objectsService.isLoadingListSubject.next(false);
         }
       );
 
@@ -44,7 +45,8 @@ export class ObjectsListComponent {
         debounce(() => timer(this.debounceTime))
       )
       .subscribe(() => {
-        this.isLoading = true;
+        this.isLoadingList = true;
+        this.objectsService.isLoadingListSubject.next(true);
       });
   }
 
