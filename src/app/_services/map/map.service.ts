@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { ObjectCategory, ObjectData, ObjectDataMap } from '../../_models/objectData';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -12,10 +14,7 @@ import VectorLayer from 'ol/layer/Vector';
 import { Geometry, Point } from 'ol/geom';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
-import { ObjectData, ObjectDataMap } from '../../_models/objectData';
 import { Icon, Style } from 'ol/style';
-import { ObjectsService } from '../objects/objects.service';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +34,7 @@ export class MapService {
 
   openPopupSubject = new Subject<ObjectDataMap>();
   toggleShowMapSubject = new Subject<boolean>();
+  isLoadingMapSubject = new BehaviorSubject<boolean>(true);
 
   isShowMap: boolean = true;
   popupData: ObjectData | undefined;
@@ -42,8 +42,6 @@ export class MapService {
   private vectorSource: VectorSource | undefined;
   private vectorLayer: VectorLayer<Feature<Geometry>> | undefined;
   private overlay: Overlay | undefined;
-
-  constructor(private objectsService: ObjectsService) {}
 
   toggleShowMap() {
     this.isShowMap = !this.isShowMap;
@@ -72,7 +70,7 @@ export class MapService {
     const objectDataMap: ObjectDataMap = feature.get('ObjectDataMap');
     this.overlay!.setPosition(coordinates);
     this.openPopupSubject.next(objectDataMap);
-    }
+  }
 
   removePopupContainer(): void {
     this.overlay!.setPosition(undefined);
@@ -101,8 +99,7 @@ export class MapService {
             },
             (isAnimationFinished: boolean) => {
               if (isAnimationFinished) {
-                const feature =
-                  this.vectorSource!.getFeaturesAtCoordinate(coordinate)[0];
+                const feature = this.getFeatureAtCoordinate(coordinate);
                 this.setPopupContainer(feature);
               }
             }
@@ -112,6 +109,10 @@ export class MapService {
     );
   }
 
+  getFeatureAtCoordinate(coordinate: Coordinate): Feature {
+    return this.vectorSource!.getFeaturesAtCoordinate(coordinate)[0];
+  }
+
   createMarkers(objects: ObjectDataMap[] | undefined): void {
     this.vectorSource?.refresh();
 
@@ -119,7 +120,7 @@ export class MapService {
       this.createMarker(object);
     });
 
-    this.objectsService.isLoadingMapSubject.next(false);
+    this.isLoadingMapSubject.next(false);
   }
 
   createMarker(object: ObjectDataMap): void {
@@ -132,7 +133,7 @@ export class MapService {
 
     const markerStyle = new Style({
       image: new Icon({
-        src: this.objectsService.getObjectCategoryIconUrl(object.category),
+        src: this.getObjectCategoryIconUrl(object.category),
         anchor: [0.5, 1],
         scale: 1,
       }),
@@ -140,6 +141,25 @@ export class MapService {
 
     markerFeature.setStyle(markerStyle);
     this.vectorSource?.addFeature(markerFeature);
+  }
+
+  getObjectCategoryIconUrl(category: ObjectCategory | undefined): string {
+    switch (category) {
+      case ObjectCategory.APARTMENT:
+        return 'mapIcons/apartment.png';
+      case ObjectCategory.NATURE:
+        return 'mapIcons/nature.png';
+      case ObjectCategory.CATHEDRAL:
+        return 'mapIcons/cathedral.png';
+      case ObjectCategory.MONUMENT:
+        return 'mapIcons/monument.png';
+      case ObjectCategory.COMPANY:
+        return 'mapIcons/company.png';
+      case ObjectCategory.OTHER:
+        return 'mapIcons/other.png';
+      default:
+        return 'mapIcons/other.png';
+    }
   }
 
   getMap(): Map {

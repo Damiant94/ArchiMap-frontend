@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
-  ObjectCategory,
   ObjectData,
   ObjectDataMap,
 } from '../../_models/objectData';
@@ -11,6 +10,7 @@ import {
   Subscription,
   catchError,
   debounce,
+  switchMap,
   tap,
   throwError,
   timer,
@@ -21,6 +21,8 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../../_models/notifications';
+import { MapService } from '../map/map.service';
+import { fromLonLat } from 'ol/proj';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +32,6 @@ export class ObjectsService {
   objectsChangedSubject = new Subject<ObjectData[]>();
   objectsForMapChangedSubject = new Subject<ObjectDataMap[]>();
   countriesCheckSubject = new Subject<void>();
-  isLoadingMapSubject = new BehaviorSubject<boolean>(true);
   isLoadingListSubject = new BehaviorSubject<boolean>(true);
 
   private filtersChangedSubscription: Subscription | undefined;
@@ -47,6 +48,8 @@ export class ObjectsService {
   };
 
   private debounceTime = 500;
+
+  mapService = inject(MapService);
 
   constructor(
     private http: HttpClient,
@@ -66,7 +69,7 @@ export class ObjectsService {
       )
       .subscribe((filters: Filters) => {
         this.filters = filters;
-        this.page = 1;
+        this.resetPage();
         this.scrollFetchingBlocked = false;
         this.getObjects().subscribe();
         this.getObjectsForMap().subscribe();
@@ -75,6 +78,10 @@ export class ObjectsService {
 
   setNextPage() {
     this.page++;
+  }
+
+  resetPage() {
+    this.page = 1;
   }
 
   getObjects(): Observable<ObjectData[]> {
@@ -86,6 +93,7 @@ export class ObjectsService {
       .pipe(
         tap((objects) => {
           if (this.page === 1) {
+            this.scrollFetchingBlocked = false;
             this.objects = objects;
             this.emitNewObjects();
           } else {
@@ -93,6 +101,7 @@ export class ObjectsService {
               this.scrollFetchingBlocked = true;
               this.isLoadingListSubject.next(false);
             } else {
+              this.scrollFetchingBlocked = false;
               this.objects = this.objects?.concat(objects);
               this.emitNewObjects();
             }
@@ -102,7 +111,7 @@ export class ObjectsService {
   }
 
   getObjectsForMap(): Observable<ObjectDataMap[]> {
-    this.isLoadingMapSubject.next(true);
+    this.mapService.isLoadingMapSubject.next(true);
     const params = this.getQueryParams();
     return this.http
       .get<any>(`${environment.urlApi}/feed/get-objects-for-map`, {
@@ -158,32 +167,25 @@ export class ObjectsService {
   }
 
   addNewObject(objectData: ObjectData): Subscription {
+    this.router.navigate(['/']);
     return this.http
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
+      .pipe(
+        switchMap(() => this.getObjectsForMap()),
+        switchMap(() => {
+          this.resetPage();
+          return this.getObjects();
+        })
+      )
       .subscribe(() => {
-        this.getObjects().subscribe(() => {
-          this.router.navigate(['/']);
-        });
+        this.notificationsService.pushNotification(
+          'Object Added successfully',
+          NotificationType.INFO
+        );
+        const coordinate = fromLonLat(objectData.location.coordinateLonLat);
+        const feature = this.mapService.getFeatureAtCoordinate(coordinate);
+        this.mapService.setPopupContainer(feature);
       });
-  }
-
-  getObjectCategoryIconUrl(category: ObjectCategory | undefined): string {
-    switch (category) {
-      case ObjectCategory.APARTMENT:
-        return 'mapIcons/apartment.png';
-      case ObjectCategory.NATURE:
-        return 'mapIcons/nature.png';
-      case ObjectCategory.CATHEDRAL:
-        return 'mapIcons/cathedral.png';
-      case ObjectCategory.MONUMENT:
-        return 'mapIcons/monument.png';
-      case ObjectCategory.COMPANY:
-        return 'mapIcons/company.png';
-      case ObjectCategory.OTHER:
-        return 'mapIcons/other.png';
-      default:
-        return 'mapIcons/other.png';
-    }
   }
 
   ngOnDestroy() {

@@ -53,7 +53,7 @@ export class ObjectDetailsComponent {
   }
 
   getObjectCategoryIconUrl(category: ObjectCategory | undefined) {
-    return this.objectsService.getObjectCategoryIconUrl(category);
+    return this.mapService.getObjectCategoryIconUrl(category);
   }
 
   openGoogleMapsUrl(): void {

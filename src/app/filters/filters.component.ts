@@ -68,7 +68,7 @@ export class FiltersComponent {
         (isLoadingList) => (this.isLoadingList = isLoadingList)
       );
     this.isLoadingMapSubscription =
-      this.objectsService.isLoadingMapSubject.subscribe(
+      this.mapService.isLoadingMapSubject.subscribe(
         (isLoadingMap) => (this.isLoadingMap = isLoadingMap)
       );
     this.countriesCheckSubscription = this.objectsService.countriesCheckSubject

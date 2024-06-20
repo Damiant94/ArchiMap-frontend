@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ObjectsService } from './_services/objects/objects.service';
 import { Subscription } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MapService } from './_services/map/map.service';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +35,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private objectsService: ObjectsService
+    private objectsService: ObjectsService, private mapService: MapService
   ) {}
 
   private getObjectsSubscription: Subscription | undefined;
@@ -49,7 +50,7 @@ export class AppComponent implements OnInit {
       .getObjectsForMap()
       .subscribe();
     this.isLoadingMapSubscription =
-      this.objectsService.isLoadingMapSubject.subscribe(
+      this.mapService.isLoadingMapSubject.subscribe(
         (isLoadingMap: boolean) => {
           this.isLoadingMap = isLoadingMap;
         }
