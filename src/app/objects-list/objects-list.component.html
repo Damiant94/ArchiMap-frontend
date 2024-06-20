@@ -1,5 +1,5 @@
 <div class="container" (scrollend)="onScrollBottom($event)">
-  @if (isLoadingList) {
+  @if (isLoadingList || !objects) {
     <div class="spinner">
       <mat-spinner [diameter]="70"></mat-spinner>
     </div>
