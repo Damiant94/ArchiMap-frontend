@@ -37,6 +37,7 @@ export class MapService {
   toggleShowMapSubject = new Subject<boolean>();
 
   isShowMap: boolean = true;
+  popupData: ObjectData | undefined;
 
   private vectorSource: VectorSource | undefined;
   private vectorLayer: VectorLayer<Feature<Geometry>> | undefined;
@@ -66,11 +67,12 @@ export class MapService {
   }
 
   setPopupContainer(feature: FeatureLike): void {
+    this.popupData = undefined;
     const coordinates = (feature.getGeometry() as Point).getCoordinates();
     const objectDataMap: ObjectDataMap = feature.get('ObjectDataMap');
     this.overlay!.setPosition(coordinates);
     this.openPopupSubject.next(objectDataMap);
-  }
+    }
 
   removePopupContainer(): void {
     this.overlay!.setPosition(undefined);

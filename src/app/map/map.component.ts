@@ -27,8 +27,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class MapComponent implements AfterViewInit {
   @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
 
-  objectData: ObjectData | undefined;
-
   private map: Map | undefined;
   isLoading = true;
 
@@ -71,7 +69,7 @@ export class MapComponent implements AfterViewInit {
       )
       .subscribe({
         next: (objectData: ObjectData | undefined) => {
-          this.objectData = objectData;
+          this.mapService.popupData = objectData;
         },
         error: (error) => {
           console.log(error);
@@ -100,7 +98,7 @@ export class MapComponent implements AfterViewInit {
       );
 
       if (feature) {
-        this.objectData = undefined;
+        this.mapService.popupData = undefined;
         this.mapService.setPopupContainer(feature);
       } else {
         this.mapService.removePopupContainer();
