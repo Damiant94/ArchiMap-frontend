@@ -17,3 +17,13 @@ body {
   right: 10px;
   left: auto;
 }
+
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: lightgray;
+  --mdc-snackbar-supporting-text-color: #000;
+}

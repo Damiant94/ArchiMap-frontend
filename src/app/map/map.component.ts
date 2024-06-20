@@ -13,7 +13,7 @@ import { MapService } from '../_services/map/map.service';
 import { MapPopupComponent } from './map-popup/map-popup.component';
 
 import Map from 'ol/Map';
-import { Subscription, switchMap } from 'rxjs';
+import { Subscription, catchError, of, switchMap } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
@@ -44,13 +44,14 @@ export class MapComponent implements AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.toggleShowMapSubscription = this.mapService.toggleShowMapSubject.subscribe((isShowMap) => {
-      if (isShowMap) {
-        this.showMap();
-      } else {
-        this.hideMap();
-      }
-    });
+    this.toggleShowMapSubscription =
+      this.mapService.toggleShowMapSubject.subscribe((isShowMap) => {
+        if (isShowMap) {
+          this.showMap();
+        } else {
+          this.hideMap();
+        }
+      });
   }
 
   ngAfterViewInit() {
@@ -59,20 +60,32 @@ export class MapComponent implements AfterViewInit {
 
     this.openPopupSubscription = this.mapService.openPopupSubject
       .pipe(
-        switchMap((objectData: ObjectDataMap) =>
-          this.objectsService.getObjectById(objectData.id)
-        )
+        switchMap((objectDataMap: ObjectDataMap) => {
+          return this.objectsService.getObjectById(objectDataMap.id).pipe(
+            catchError((error) => {
+              this.mapService.removePopupContainer();
+              return of(undefined);
+            })
+          );
+        })
       )
-      .subscribe((objectData: ObjectData) => {
-        this.objectData = objectData;
+      .subscribe({
+        next: (objectData: ObjectData | undefined) => {
+          this.objectData = objectData;
+        },
+        error: (error) => {
+          console.log(error);
+          this.mapService.removePopupContainer();
+        },
       });
 
     this.mapService.createNewVectorSource();
-    this.objectsForMapChangedSubscription = this.objectsService.objectsForMapChangedSubject.subscribe(
-      (objects: ObjectDataMap[] | undefined) => {
-        this.mapService.createMarkers(objects);
-      }
-    );
+    this.objectsForMapChangedSubscription =
+      this.objectsService.objectsForMapChangedSubject.subscribe(
+        (objects: ObjectDataMap[] | undefined) => {
+          this.mapService.createMarkers(objects);
+        }
+      );
     this.mapService.createOverlayForPopups(this.popupContainer?.nativeElement);
 
     this.map.on('pointermove', (pointerMoveEvent) => {

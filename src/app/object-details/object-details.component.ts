@@ -21,7 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './object-details.component.html',
   styleUrl: './object-details.component.scss',
@@ -42,8 +42,13 @@ export class ObjectDetailsComponent {
       this.id = params['id'];
     });
 
-    this.objectsService.getObjectById(this.id).subscribe((object) => {
-      this.objectData = object;
+    this.objectsService.getObjectById(this.id).subscribe({
+      next: (object) => {
+        this.objectData = object;
+      },
+      error: () => {
+        this.router.navigate(['/']);
+      },
     });
   }
 

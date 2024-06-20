@@ -4,11 +4,23 @@ import {
   ObjectData,
   ObjectDataMap,
 } from '../../_models/objectData';
-import { BehaviorSubject, Observable, Subject, Subscription, debounce, tap, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  Subscription,
+  catchError,
+  debounce,
+  tap,
+  throwError,
+  timer,
+} from 'rxjs';
 import { Filters } from '../../_models/filters';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../../_models/notifications';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +48,11 @@ export class ObjectsService {
 
   private debounceTime = 500;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private notificationsService: NotificationsService
+  ) {
     this.filtersChangedSubject
       .pipe(
         tap((filters) => {
@@ -123,7 +139,17 @@ export class ObjectsService {
   }
 
   getObjectById(id: string): Observable<ObjectData> {
-    return this.http.get<any>(`${environment.urlApi}/feed/get-object/${id}`);
+    return this.http
+      .get<any>(`${environment.urlApi}/feed/get-object/${id}`)
+      .pipe(
+        catchError((error) => {
+          this.notificationsService.pushNotification(
+            "Coudn't find object",
+            NotificationType.WARN
+          );
+          return throwError(() => new Error(error));
+        })
+      );
   }
 
   getCountries(): Observable<string[]> {
@@ -133,15 +159,10 @@ export class ObjectsService {
   addNewObject(objectData: ObjectData): Subscription {
     return this.http
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
-      .subscribe({
-        next: () => {
-          this.getObjects().subscribe(() => {
-            this.router.navigate(['/']);
-          });
-        },
-        error: (err) => {
-          console.log(err);
-        },
+      .subscribe(() => {
+        this.getObjects().subscribe(() => {
+          this.router.navigate(['/']);
+        });
       });
   }
 
