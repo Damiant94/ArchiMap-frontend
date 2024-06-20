@@ -20,7 +20,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
-import { ObjectCategory, ObjectData } from '../_models/objectData';
+import {
+  ObjectCategory,
+  ObjectData,
+  ObjectStatus,
+} from '../_models/objectData';
 import { MapService } from '../_services/map/map.service';
 import { GeoDataService } from '../_services/geo-data/geo-data.service';
 import { ObjectsService } from '../_services/objects/objects.service';
@@ -295,6 +299,7 @@ export class ObjectAddComponent {
         ...form2RawValue.location,
         coordinateLonLat: coordinate,
       },
+      status: ObjectStatus.NEW,
     };
     if (!newObject.imageUrl) {
       delete newObject.imageUrl;

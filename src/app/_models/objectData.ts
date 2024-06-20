@@ -10,12 +10,19 @@ export interface ObjectData {
   category: ObjectCategory;
   username: string;
   imageUrl?: string;
+  status?: ObjectStatus
 }
 
 export interface ObjectDataMap {
   id: string;
   coordinateLonLat: number[];
   category: ObjectCategory;
+}
+
+export enum ObjectStatus {
+  NEW = 'NEW',
+  REPORTED = 'REPORTED',
+  OK = 'OK'
 }
 
 export enum ObjectCategory {

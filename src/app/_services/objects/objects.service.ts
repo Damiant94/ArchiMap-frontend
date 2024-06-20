@@ -1,8 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  ObjectData,
-  ObjectDataMap,
-} from '../../_models/objectData';
+import { ObjectData, ObjectDataMap } from '../../_models/objectData';
 import {
   BehaviorSubject,
   Observable,
@@ -170,21 +167,12 @@ export class ObjectsService {
     this.router.navigate(['/']);
     return this.http
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
-      .pipe(
-        switchMap(() => this.getObjectsForMap()),
-        switchMap(() => {
-          this.resetPage();
-          return this.getObjects();
-        })
-      )
       .subscribe(() => {
         this.notificationsService.pushNotification(
-          'Object Added successfully',
-          NotificationType.INFO
+          'Thanks for sharing the object. Object is being modereted and will be added soon.',
+          NotificationType.INFO,
+          10000
         );
-        const coordinate = fromLonLat(objectData.location.coordinateLonLat);
-        const feature = this.mapService.getFeatureAtCoordinate(coordinate);
-        this.mapService.setPopupContainer(feature);
       });
   }
 
