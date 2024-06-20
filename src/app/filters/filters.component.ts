@@ -43,7 +43,7 @@ export class FiltersComponent {
   isLoadingList: boolean = true;
 
   countries: string[] = [];
-  categories: string[] = Object.keys(ObjectCategory);
+  categories: string[] = Object.keys(ObjectCategory).sort();
 
   private objectsChangedSubscription: Subscription | undefined;
   private countriesCheckSubscription: Subscription | undefined;
