@@ -91,6 +91,7 @@ export class ObjectsService {
           } else {
             if (objects.length === 0) {
               this.scrollFetchingBlocked = true;
+              this.isLoadingListSubject.next(false);
             } else {
               this.objects = this.objects?.concat(objects);
               this.emitNewObjects();
