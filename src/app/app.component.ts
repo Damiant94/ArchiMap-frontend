@@ -33,7 +33,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  constructor(private objectsService: ObjectsService) {}
+  constructor(
+    private objectsService: ObjectsService
+  ) {}
 
   private getObjectsSubscription: Subscription | undefined;
   private getObjectsForMapSubscription: Subscription | undefined;
@@ -46,9 +48,12 @@ export class AppComponent implements OnInit {
     this.getObjectsForMapSubscription = this.objectsService
       .getObjectsForMap()
       .subscribe();
-    this.isLoadingMapSubscription = this.objectsService.isLoadingMapSubject.subscribe((isLoadingMap: boolean) => {
-      this.isLoadingMap = isLoadingMap;
-    })
+    this.isLoadingMapSubscription =
+      this.objectsService.isLoadingMapSubject.subscribe(
+        (isLoadingMap: boolean) => {
+          this.isLoadingMap = isLoadingMap;
+        }
+      );
   }
 
   ngOnDestroy() {

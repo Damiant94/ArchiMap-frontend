@@ -51,7 +51,7 @@ export class FiltersComponent {
   private isLoadingMapSubscription: Subscription | undefined;
 
   onFilterChange() {
-    this.objectsService.filtersChangedSubject.next(this.filtersValue)
+    this.objectsService.filtersChangedSubject.next(this.filtersValue);
   }
 
   get filtersValue() {
@@ -63,29 +63,21 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
-    this.isLoadingListSubscription = this.objectsService.isLoadingListSubject.subscribe(
-      (isLoadingList) => this.isLoadingList = isLoadingList
-    )
-    this.isLoadingMapSubscription = this.objectsService.isLoadingMapSubject.subscribe(
-      (isLoadingMap) => this.isLoadingMap = isLoadingMap
-    )
+    this.isLoadingListSubscription =
+      this.objectsService.isLoadingListSubject.subscribe(
+        (isLoadingList) => (this.isLoadingList = isLoadingList)
+      );
+    this.isLoadingMapSubscription =
+      this.objectsService.isLoadingMapSubject.subscribe(
+        (isLoadingMap) => (this.isLoadingMap = isLoadingMap)
+      );
     this.countriesCheckSubscription = this.objectsService.countriesCheckSubject
       .pipe(switchMap(() => this.objectsService.getCountries()))
-      .subscribe({
-        next: (countries) => {
-          this.countries = countries;
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-    this.objectsService.getCountries().subscribe({
-      next: (countries) => {
+      .subscribe((countries) => {
         this.countries = countries;
-      },
-      error: (err) => {
-        console.log(err);
-      },
+      });
+    this.objectsService.getCountries().subscribe((countries) => {
+      this.countries = countries;
     });
   }
 
