@@ -7,7 +7,7 @@ import { NotificationType } from '../../_models/notifications';
 export const feedInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationsService = inject(NotificationsService);
   const longResponseMessage =
-    'Render spins down a Free web service that goes 15 minutes without receiving inbound traffic. Render spins the service back up whenever it next receives a request to process. Spinning up a service takes up to a minute, which causes a noticeable delay for incoming requests until the service is back up and running. For example, a browser page load will hang temporarily. Sorry for inconvenience.';
+    'Server platform spins down a free web service that goes 15 minutes without receiving inbound traffic. Platform spins the service back up whenever it next receives a request to process. Spinning up a service takes up to a minute, which causes a noticeable delay for incoming requests until the service is back up and running. Thanks for your patience.';
 
   let timer: any;
   const delayTime = 5000;
