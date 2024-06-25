@@ -1,20 +1,32 @@
-<div class="container" #container [ngClass]="{isLast: isLast}" (click)="openDetails()">
+<div
+  class="container"
+  #container
+  [ngClass]="{ isLast: isLast }"
+  (click)="openDetails()"
+>
   <div class="image">
     <img
       alt="{{ objectData?.name }}"
-      src="{{objectData?.imageUrl ? objectData?.imageUrl : 'logo/building64-2.png'}}"
+      src="{{
+        objectData?.imageUrl ? objectData?.imageUrl : 'logo/building64-2.png'
+      }}"
     />
   </div>
   <div class="content">
     <div class="name">{{ objectData?.name }}</div>
     <div class="location">
       {{ objectData?.location?.country }} / {{ objectData?.location?.place }}
-      </div>
+    </div>
     <div class="description">{{ objectData?.description }}</div>
   </div>
   <div class="icon">
-    <button mat-icon-button matTooltip="Locate on map" matTooltipShowDelay="500" (click)="onAnimateToView($event)">
-      <img src="linksIcons/map.png" alt="map-icon"/>
+    <button
+      mat-icon-button
+      matTooltip="Locate on map"
+      matTooltipShowDelay="500"
+      (click)="onAnimateToView($event)"
+    >
+      <img src="linksIcons/map.png" alt="map-icon" />
     </button>
   </div>
 </div>

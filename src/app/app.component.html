@@ -1,26 +1,24 @@
-<div class="container">
-  <nav class="nav">
-    <app-navbar />
-  </nav>
-  <main class="main">
-    <div class="filters">
-      <app-filters />
+<nav class="nav">
+  <app-navbar />
+</nav>
+<main class="main">
+  <div class="filters">
+    <app-filters />
+  </div>
+  <div class="objects-list">
+    <app-objects-list />
+  </div>
+  <div class="map">
+    @if (isLoadingMap) {
+    <div class="spinner">
+      <mat-spinner></mat-spinner>
     </div>
-    <div class="objects-list">
-      <app-objects-list />
-    </div>
-    <div class="map">
-      @if (isLoadingMap) {
-        <div class="spinner">
-          <mat-spinner></mat-spinner>
-        </div>
-      }
-      <app-map />
-    </div>
-  </main>
-  <footer class="footer">
-    <app-footer />
-  </footer>
-</div>
+    }
+    <app-map />
+  </div>
+</main>
+<footer class="footer">
+  <app-footer />
+</footer>
 
 <router-outlet></router-outlet>

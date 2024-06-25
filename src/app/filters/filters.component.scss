@@ -1,4 +1,4 @@
-.container {
+:host {
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100%;
@@ -36,7 +36,7 @@
 }
 
 @media (max-width: 700px) {
-  .container {
+  :host {
     padding: 0;
 
     .search-container {
