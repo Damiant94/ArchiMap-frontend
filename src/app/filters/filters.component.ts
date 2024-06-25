@@ -11,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MapService } from '../_services/map/map.service';
+import { FiltersService } from '../_services/filters/filters.service';
 
 @Component({
   selector: 'app-filters',
@@ -31,7 +32,8 @@ import { MapService } from '../_services/map/map.service';
 export class FiltersComponent {
   constructor(
     private objectsService: ObjectsService,
-    private mapService: MapService
+    private mapService: MapService,
+    private filtersService: FiltersService
   ) {}
 
   searchInput: string = '';
@@ -40,7 +42,6 @@ export class FiltersComponent {
 
   isShowList: boolean = false;
   isLoadingMap: boolean = true;
-  isLoadingList: boolean = true;
 
   countries: string[] = [];
   categories: string[] = Object.keys(ObjectCategory).sort();
@@ -51,7 +52,11 @@ export class FiltersComponent {
   private isLoadingMapSubscription: Subscription | undefined;
 
   onFilterChange() {
-    this.objectsService.filtersChangedSubject.next(this.filtersValue);
+    this.filtersService.filtersChangedSubject.next(this.filtersValue);
+  }
+
+  get isLoadingList() {
+    return this.objectsService.isLoadingList;
   }
 
   get filtersValue() {
@@ -63,10 +68,6 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
-    this.isLoadingListSubscription =
-      this.objectsService.isLoadingListSubject.subscribe(
-        (isLoadingList) => (this.isLoadingList = isLoadingList)
-      );
     this.isLoadingMapSubscription =
       this.mapService.isLoadingMapSubject.subscribe(
         (isLoadingMap) => (this.isLoadingMap = isLoadingMap)

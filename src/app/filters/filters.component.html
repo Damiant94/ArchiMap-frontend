@@ -4,7 +4,7 @@
     <input
       matInput
       [(ngModel)]="searchInput"
-      [disabled]="isLoadingMap || isLoadingList"
+      [readonly]="isLoadingMap || isLoadingList"
       (input)="onFilterChange()"
     />
   </mat-form-field>
