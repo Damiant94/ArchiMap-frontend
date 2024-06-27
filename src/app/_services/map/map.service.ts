@@ -43,6 +43,7 @@ export class MapService {
 
   isShowMap: boolean = true;
   popupData: ObjectData | undefined;
+  error: boolean = false;
 
   private vectorSource: VectorSource | undefined;
   private vectorLayer: VectorLayer<Feature<Geometry>> | undefined;
@@ -82,20 +83,16 @@ export class MapService {
   }
 
   getObjectById(id: string) {
+    this.error = false;
     this.objectsService
       .getObjectById(id)
-      .pipe(
-        catchError((error) => {
-          this.removePopupContainer();
-          return of(undefined);
-        })
-      )
       .subscribe({
         next: (objectData: ObjectData | undefined) => {
           this.popupData = objectData;
         },
         error: (error) => {
           console.log(error);
+          this.error = true;
           this.removePopupContainer();
         },
       });
@@ -132,7 +129,7 @@ export class MapService {
               easing: easeOut,
             },
             (isAnimationFinished: boolean) => {
-              if (isAnimationFinished) {
+              if (isAnimationFinished && !this.error) {
                 this.showPopupContainer(coordinate);
               }
             }
