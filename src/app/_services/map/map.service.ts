@@ -64,7 +64,11 @@ export class MapService {
   createOverlayForPopups(element: HTMLElement): void {
     this.overlay = new Overlay({
       element: element,
-      autoPan: true,
+      autoPan: {
+        animation: {
+          duration: 400,
+        },
+      },
     });
     this.map?.addOverlay(this.overlay);
   }

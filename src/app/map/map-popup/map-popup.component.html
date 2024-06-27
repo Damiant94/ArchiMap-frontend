@@ -3,6 +3,7 @@
   (click)="openDetails()"
   [matTooltip]="objectData ? 'show details' : ''"
   matTooltipShowDelay="500"
+  #popupContainer
 >
   @if (!objectData) {
   <div class="spinner">

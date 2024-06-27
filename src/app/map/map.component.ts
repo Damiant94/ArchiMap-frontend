@@ -25,7 +25,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
-  @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
+  @ViewChild(MapPopupComponent) popupComponent!: MapPopupComponent;
 
   private map: Map | undefined;
 
@@ -56,7 +56,7 @@ export class MapComponent implements AfterViewInit {
     this.map.setTarget(this.elementRef.nativeElement);
 
     this.mapService.createNewVectorSource();
-    this.mapService.createOverlayForPopups(this.popupContainer?.nativeElement);
+    this.mapService.createOverlayForPopups(this.popupComponent.popupContainer?.nativeElement);
 
     this.getObjectsForMapSubscription = this.objectsService
       .getObjectsForMap()
