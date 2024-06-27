@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ObjectData, ObjectDataMap } from '../../_models/objectData';
 import {
   Observable,
@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../../_models/notifications';
-import { MapService } from '../map/map.service';
 import { Filters } from '../../_models/filters';
 
 @Injectable({
@@ -20,8 +19,6 @@ import { Filters } from '../../_models/filters';
 })
 export class ObjectsService {
   page: number = 1;
-
-  mapService = inject(MapService);
 
   filtersChangedSubject = new Subject<Filters>();
   filters: Filters = { search: '', category: '', country: '' };

@@ -4,7 +4,7 @@ import {
   ObjectData,
   ObjectDataMap,
 } from '../../_models/objectData';
-import { Subject } from 'rxjs';
+import { Subject, catchError, of } from 'rxjs';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -19,11 +19,14 @@ import { Geometry, Point } from 'ol/geom';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
 import { Icon, Style } from 'ol/style';
+import { ObjectsService } from '../objects/objects.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
+  constructor(private objectsService: ObjectsService) {}
+
   private map = new Map({
     view: new View({
       center: [0, 0],
@@ -36,7 +39,6 @@ export class MapService {
     ],
   });
 
-  openPopupSubject = new Subject<ObjectDataMap>();
   toggleShowMapSubject = new Subject<boolean>();
 
   isShowMap: boolean = true;
@@ -71,19 +73,44 @@ export class MapService {
     this.popupData = undefined;
     const coordinates = (feature.getGeometry() as Point).getCoordinates();
     const objectDataMap: ObjectDataMap = feature.get('ObjectDataMap');
-    this.overlay!.setPosition(coordinates);
-    this.openPopupSubject.next(objectDataMap);
+    this.showPopupContainer(coordinates);
+    this.getObjectById(objectDataMap.id);
+  }
+
+  getObjectById(id: string) {
+    this.objectsService
+      .getObjectById(id)
+      .pipe(
+        catchError((error) => {
+          this.removePopupContainer();
+          return of(undefined);
+        })
+      )
+      .subscribe({
+        next: (objectData: ObjectData | undefined) => {
+          this.popupData = objectData;
+        },
+        error: (error) => {
+          console.log(error);
+          this.removePopupContainer();
+        },
+      });
   }
 
   removePopupContainer(): void {
     this.overlay!.setPosition(undefined);
   }
 
+  showPopupContainer(coordinate: Coordinate): void {
+    this.overlay!.setPosition(coordinate);
+  }
+
   onAnimateToView(objectData: ObjectData): void {
+    this.removePopupContainer();
     const view = this.map.getView();
     view.cancelAnimations();
-    this.removePopupContainer();
     const coordinate = fromLonLat(objectData.location.coordinateLonLat);
+    this.getObjectById(objectData._id);
     view.animate(
       {
         center: coordinate,
@@ -102,8 +129,7 @@ export class MapService {
             },
             (isAnimationFinished: boolean) => {
               if (isAnimationFinished) {
-                const feature = this.getFeatureAtCoordinate(coordinate);
-                this.setPopupContainer(feature);
+                this.showPopupContainer(coordinate);
               }
             }
           );

@@ -7,13 +7,13 @@ import {
   Renderer2,
 } from '@angular/core';
 
-import { ObjectData, ObjectDataMap } from '../_models/objectData';
+import { ObjectDataMap } from '../_models/objectData';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { MapService } from '../_services/map/map.service';
 import { MapPopupComponent } from './map-popup/map-popup.component';
 
 import Map from 'ol/Map';
-import { Subscription, catchError, of, switchMap } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
@@ -28,10 +28,8 @@ export class MapComponent implements AfterViewInit {
   @ViewChild('popupContainer') popupContainer: ElementRef | undefined;
 
   private map: Map | undefined;
-  isLoading = true;
 
   private toggleShowMapSubscription: Subscription | undefined;
-  private openPopupSubscription: Subscription | undefined;
   private getObjectsForMapSubscription: Subscription | undefined;
   private filtersChangedSubscription: Subscription | undefined;
 
@@ -57,28 +55,8 @@ export class MapComponent implements AfterViewInit {
     this.map = this.mapService.getMap();
     this.map.setTarget(this.elementRef.nativeElement);
 
-    this.openPopupSubscription = this.mapService.openPopupSubject
-      .pipe(
-        switchMap((objectDataMap: ObjectDataMap) => {
-          return this.objectsService.getObjectById(objectDataMap.id).pipe(
-            catchError((error) => {
-              this.mapService.removePopupContainer();
-              return of(undefined);
-            })
-          );
-        })
-      )
-      .subscribe({
-        next: (objectData: ObjectData | undefined) => {
-          this.mapService.popupData = objectData;
-        },
-        error: (error) => {
-          console.log(error);
-          this.mapService.removePopupContainer();
-        },
-      });
-
     this.mapService.createNewVectorSource();
+    this.mapService.createOverlayForPopups(this.popupContainer?.nativeElement);
 
     this.getObjectsForMapSubscription = this.objectsService
       .getObjectsForMap()
@@ -100,8 +78,6 @@ export class MapComponent implements AfterViewInit {
         },
       });
 
-    this.mapService.createOverlayForPopups(this.popupContainer?.nativeElement);
-
     this.map.on('pointermove', (pointerMoveEvent) => {
       const hit = this.map!.hasFeatureAtPixel(pointerMoveEvent.pixel);
       this.map!.getTargetElement().style.cursor = hit ? 'pointer' : '';
@@ -114,7 +90,6 @@ export class MapComponent implements AfterViewInit {
       );
 
       if (feature) {
-        this.mapService.popupData = undefined;
         this.mapService.setPopupContainer(feature);
       } else {
         this.mapService.removePopupContainer();
@@ -141,7 +116,6 @@ export class MapComponent implements AfterViewInit {
 
   ngOnDestroy() {
     this.toggleShowMapSubscription?.unsubscribe();
-    this.openPopupSubscription?.unsubscribe();
     this.getObjectsForMapSubscription?.unsubscribe();
     this.filtersChangedSubscription?.unsubscribe();
   }
