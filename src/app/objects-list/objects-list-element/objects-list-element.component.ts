@@ -18,7 +18,7 @@ export class ObjectsListElementComponent {
   @Input({ required: true }) objectData: ObjectData | undefined;
   @Input({ required: true }) isLast: boolean | undefined;
 
-  constructor(private router: Router, private mapService: MapService, private objectsService: ObjectsService) {}
+  constructor(private router: Router, private mapService: MapService) {}
 
   openDetails(): void {
     this.router.navigate(['details', this.objectData?._id]);

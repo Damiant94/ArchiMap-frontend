@@ -10,6 +10,7 @@ import { MapService } from '../_services/map/map.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-object-details',
@@ -37,19 +38,24 @@ export class ObjectDetailsComponent {
   id: string = '';
   objectData: ObjectData | undefined;
 
+  routeParamsSubscription: Subscription | undefined;
+  getObjectSubscription: Subscription | undefined;
+
   ngOnInit() {
-    this.route.params.subscribe((params) => {
+    this.routeParamsSubscription = this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
 
-    this.objectsService.getObjectById(this.id).subscribe({
-      next: (object) => {
-        this.objectData = object;
-      },
-      error: () => {
-        this.router.navigate(['/']);
-      },
-    });
+    this.getObjectSubscription = this.objectsService
+      .getObjectById(this.id)
+      .subscribe({
+        next: (object) => {
+          this.objectData = object;
+        },
+        error: () => {
+          this.router.navigate(['/']);
+        },
+      });
   }
 
   getObjectCategoryIconUrl(category: ObjectCategory | undefined) {
@@ -73,5 +79,10 @@ export class ObjectDetailsComponent {
 
   onClose(): void {
     this.router.navigate(['/']);
+  }
+
+  ngOnDestroy() {
+    this.routeParamsSubscription!.unsubscribe();
+    this.getObjectSubscription!.unsubscribe();
   }
 }

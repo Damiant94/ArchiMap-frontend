@@ -9,9 +9,7 @@ import { Address, Location } from '../../_models/geoData';
   providedIn: 'root',
 })
 export class GeoDataService {
-  constructor(
-    private http: HttpClient
-  ) {}
+  constructor(private http: HttpClient) {}
 
   // private getUrl(coordinateLatLon: Coordinate) {
   //   return `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${coordinateLatLon[0]}&longitude=${coordinateLatLon[1]}&localityLanguage=en`;

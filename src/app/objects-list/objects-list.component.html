@@ -1,14 +1,11 @@
 <div class="container" (scrollend)="onScrollBottom($event)">
   @if (isLoadingList || !objects) {
-    <div class="spinner">
-      <mat-spinner [diameter]="70"></mat-spinner>
-    </div>
-  }
-  @else {
-    @for (object of objects; track object._id; let last = $last) {
-      <app-objects-list-element [objectData]="object" [isLast]="last" />
-    } @empty {
-      <div class="no-objects-found">No objects found</div>
-    }
-  }
+  <div class="spinner">
+    <mat-spinner [diameter]="70"></mat-spinner>
+  </div>
+  } @else { @for (object of objects; track object._id; let last = $last) {
+  <app-objects-list-element [objectData]="object" [isLast]="last" />
+  } @empty {
+  <div class="no-objects-found">No objects found</div>
+  } }
 </div>

@@ -24,6 +24,6 @@ export class MapPopupComponent {
   }
 
   get objectData() {
-    return this.mapService.popupData
+    return this.mapService.popupData;
   }
 }

@@ -16,33 +16,59 @@ export class ObjectsListComponent {
   constructor(private objectsService: ObjectsService) {}
 
   objects: ObjectData[] | undefined;
+  isScrollFetchingBlocked: boolean = false;
+  isLoadingList = false;
 
-  private objectsChangedSubscription: Subscription | undefined;
+  filtersChangedSubscription: Subscription | undefined;
+  getObjectsSubscription: Subscription | undefined;
+  getObjectsOnScrollSubscription: Subscription | undefined;
 
   ngOnInit() {
-    this.objectsChangedSubscription =
-      this.objectsService.objectsChangedSubject.subscribe(
-        (objects: ObjectData[] | undefined) => {
-          this.objects = objects;
-          this.objectsService.isLoadingList = false;
-        }
-      );
-  }
-
-  get isLoadingList() {
-    return this.objectsService.isLoadingList;
+    this.isLoadingList = true;
+    this.getObjectsSubscription = this.objectsService.getObjects().subscribe({
+      next: (objects: ObjectData[]) => {
+        this.objects = objects;
+        this.isLoadingList = false;
+      },
+    });
+    this.filtersChangedSubscription =
+      this.objectsService.filtersChangedSubject.subscribe({
+        next: () => {
+          this.isLoadingList = true;
+          this.objectsService.resetPage();
+          this.objectsService.getObjects().subscribe({
+            next: (objects: ObjectData[]) => {
+              this.objects = objects;
+              this.isLoadingList = false;
+              this.isScrollFetchingBlocked = false;
+            },
+          });
+        },
+      });
   }
 
   onScrollBottom(event: any) {
-    if (this.objectsService.scrollFetchingBlocked) return;
+    if (this.isScrollFetchingBlocked) return;
     const { scrollTop, scrollHeight, offsetHeight } = event.target;
     if (scrollTop > scrollHeight - offsetHeight - 50) {
       this.objectsService.setNextPage();
-      this.objectsService.getObjects().subscribe();
+      this.getObjectsOnScrollSubscription = this.objectsService
+        .getObjects()
+        .subscribe({
+          next: (objects: ObjectData[]) => {
+            if (objects.length === 0) {
+              this.isScrollFetchingBlocked = true;
+              return;
+            }
+            this.objects = this.objects?.concat(objects);
+          },
+        });
     }
   }
 
   ngOnDestroy() {
-    this.objectsChangedSubscription?.unsubscribe();
+    this.filtersChangedSubscription?.unsubscribe();
+    this.getObjectsSubscription?.unsubscribe();
+    this.getObjectsOnScrollSubscription?.unsubscribe();
   }
 }

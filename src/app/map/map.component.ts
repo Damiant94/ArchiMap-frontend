@@ -32,7 +32,8 @@ export class MapComponent implements AfterViewInit {
 
   private toggleShowMapSubscription: Subscription | undefined;
   private openPopupSubscription: Subscription | undefined;
-  private objectsForMapChangedSubscription: Subscription | undefined;
+  private getObjectsForMapSubscription: Subscription | undefined;
+  private filtersChangedSubscription: Subscription | undefined;
 
   constructor(
     private elementRef: ElementRef,
@@ -78,12 +79,27 @@ export class MapComponent implements AfterViewInit {
       });
 
     this.mapService.createNewVectorSource();
-    this.objectsForMapChangedSubscription =
-      this.objectsService.objectsForMapChangedSubject.subscribe(
-        (objects: ObjectDataMap[] | undefined) => {
+
+    this.getObjectsForMapSubscription = this.objectsService
+      .getObjectsForMap()
+      .subscribe({
+        next: (objects: ObjectDataMap[]) => {
           this.mapService.createMarkers(objects);
-        }
-      );
+        },
+      });
+
+    this.filtersChangedSubscription = this.objectsService.filtersChangedSubject
+      .pipe(
+        switchMap(() => {
+          return this.objectsService.getObjectsForMap();
+        })
+      )
+      .subscribe({
+        next: (objects: ObjectDataMap[]) => {
+          this.mapService.createMarkers(objects);
+        },
+      });
+
     this.mapService.createOverlayForPopups(this.popupContainer?.nativeElement);
 
     this.map.on('pointermove', (pointerMoveEvent) => {
@@ -126,6 +142,7 @@ export class MapComponent implements AfterViewInit {
   ngOnDestroy() {
     this.toggleShowMapSubscription?.unsubscribe();
     this.openPopupSubscription?.unsubscribe();
-    this.objectsForMapChangedSubscription?.unsubscribe();
+    this.getObjectsForMapSubscription?.unsubscribe();
+    this.filtersChangedSubscription?.unsubscribe();
   }
 }

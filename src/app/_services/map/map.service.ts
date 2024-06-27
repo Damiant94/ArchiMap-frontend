@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ObjectCategory, ObjectData, ObjectDataMap } from '../../_models/objectData';
-import { BehaviorSubject, Subject } from 'rxjs';
+import {
+  ObjectCategory,
+  ObjectData,
+  ObjectDataMap,
+} from '../../_models/objectData';
+import { Subject } from 'rxjs';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -34,7 +38,6 @@ export class MapService {
 
   openPopupSubject = new Subject<ObjectDataMap>();
   toggleShowMapSubject = new Subject<boolean>();
-  isLoadingMapSubject = new BehaviorSubject<boolean>(true);
 
   isShowMap: boolean = true;
   popupData: ObjectData | undefined;
@@ -119,8 +122,6 @@ export class MapService {
     objects?.forEach((object: ObjectDataMap): void => {
       this.createMarker(object);
     });
-
-    this.isLoadingMapSubject.next(false);
   }
 
   createMarker(object: ObjectDataMap): void {

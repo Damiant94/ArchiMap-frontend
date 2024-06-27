@@ -21,13 +21,13 @@ import { NotificationsService } from '../../_services/notifications/notification
     MatSnackBarActions,
     MatSnackBarAction,
     MatIconModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss',
 })
 export class NotificationComponent {
-  messages: {message: string, type: NotificationType}[] = [];
+  messages: { message: string; type: NotificationType }[] = [];
 
   constructor(
     public snackBarRef: MatSnackBarRef<NotificationComponent>,
@@ -38,12 +38,13 @@ export class NotificationComponent {
   }
 
   removeMessage(messageToRemove: string) {
-    this.messages = this.messages.filter(message => {
-      return message.message !== messageToRemove
-    })
-    this.notificationService.messages = this.notificationService.messages.filter(message => {
-      return message.message !== messageToRemove
-    })
+    this.messages = this.messages.filter((message) => {
+      return message.message !== messageToRemove;
+    });
+    this.notificationService.messages =
+      this.notificationService.messages.filter((message) => {
+        return message.message !== messageToRemove;
+      });
     if (this.messages.length === 0) {
       this.snackBarRef.dismiss();
     }

@@ -9,9 +9,9 @@ import { Router } from '@angular/router';
   styleUrl: './backdrop.component.scss',
 })
 export class BackdropComponent {
-  constructor(private router: Router){}
+  constructor(private router: Router) {}
 
   onBackdropClick() {
-    this.router.navigate(["/"]);
+    this.router.navigate(['/']);
   }
 }

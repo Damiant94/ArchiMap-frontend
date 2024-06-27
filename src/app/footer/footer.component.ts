@@ -7,7 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [MatButtonModule, MatTooltipModule],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+  styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
   onGithubClick() {

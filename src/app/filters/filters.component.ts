@@ -2,16 +2,21 @@ import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ObjectsService } from '../_services/objects/objects.service';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ObjectCategory } from '../_models/objectData';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
-import { Subscription, switchMap } from 'rxjs';
+import { Subscription, debounce, tap, timer } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MapService } from '../_services/map/map.service';
-import { FiltersService } from '../_services/filters/filters.service';
+import { Filters } from '../_models/filters';
 
 @Component({
   selector: 'app-filters',
@@ -25,6 +30,7 @@ import { FiltersService } from '../_services/filters/filters.service';
     MatTooltipModule,
     MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
@@ -33,65 +39,77 @@ export class FiltersComponent {
   constructor(
     private objectsService: ObjectsService,
     private mapService: MapService,
-    private filtersService: FiltersService
+    private formBuilder: FormBuilder
   ) {}
 
-  searchInput: string = '';
-  categorySelect: string = '';
-  countrySelect: string = '';
-
-  isShowList: boolean = false;
-  isLoadingMap: boolean = true;
-
-  countries: string[] = [];
+  countries = this.objectsService.getCountries();
   categories: string[] = Object.keys(ObjectCategory).sort();
 
-  private objectsChangedSubscription: Subscription | undefined;
-  private countriesCheckSubscription: Subscription | undefined;
-  private isLoadingListSubscription: Subscription | undefined;
-  private isLoadingMapSubscription: Subscription | undefined;
+  filtersForm!: FormGroup;
+  debounceTime = 500;
 
-  onFilterChange() {
-    this.filtersService.filtersChangedSubject.next(this.filtersValue);
-  }
+  searchValue: string | undefined;
 
-  get isLoadingList() {
-    return this.objectsService.isLoadingList;
-  }
-
+  filtersFormChangedSubscription: Subscription | undefined;
+  
   get filtersValue() {
-    return {
-      search: this.searchInput,
-      category: this.categorySelect,
-      country: this.countrySelect,
-    };
+    return this.filtersForm.value;
+  }
+
+  get isShowMap() {
+    return this.mapService.isShowMap;
   }
 
   ngOnInit() {
-    this.isLoadingMapSubscription =
-      this.mapService.isLoadingMapSubject.subscribe(
-        (isLoadingMap) => (this.isLoadingMap = isLoadingMap)
-      );
-    this.countriesCheckSubscription = this.objectsService.countriesCheckSubject
-      .pipe(switchMap(() => this.objectsService.getCountries()))
-      .subscribe((countries) => {
-        this.countries = countries;
-      });
-    this.objectsService.getCountries().subscribe((countries) => {
-      this.countries = countries;
+    this.filtersForm = this.formBuilder.group({
+      search: [''],
+      category: [''],
+      country: [''],
     });
+
+    this.filtersFormChangedSubscription = this.filtersForm.valueChanges
+      .pipe(
+        tap((filters: Filters) => {
+          if (filters.search === this.searchValue) {
+            this.debounceTime = 0;
+          } else {
+            this.debounceTime = 500;
+          }
+          this.searchValue = filters.search;
+        }),
+        debounce(() => timer(this.debounceTime))
+      )
+      .subscribe({
+        next: (value: Filters) => {
+          this.objectsService.setFilters(value);
+          this.objectsService.filtersChangedSubject.next(value);
+        },
+      });
   }
 
   isFiltersEmpty(): boolean {
-    return !this.searchInput && !this.categorySelect && !this.countrySelect;
+    return (
+      this.searchInput?.value === '' &&
+      this.categorySelect?.value === '' &&
+      this.countrySelect?.value === ''
+    );
+  }
+
+  get searchInput() {
+    return this.filtersForm.get('search');
+  }
+  get categorySelect() {
+    return this.filtersForm.get('category');
+  }
+  get countrySelect() {
+    return this.filtersForm.get('country');
   }
 
   onResetFilters(): void {
     if (this.isFiltersEmpty()) return;
-    this.searchInput = '';
-    this.categorySelect = '';
-    this.countrySelect = '';
-    this.onFilterChange();
+    this.searchInput?.setValue('');
+    this.categorySelect?.setValue('');
+    this.countrySelect?.setValue('');
   }
 
   onToggleShowMap() {
@@ -99,9 +117,6 @@ export class FiltersComponent {
   }
 
   ngOnDestroy() {
-    this.objectsChangedSubscription?.unsubscribe();
-    this.countriesCheckSubscription?.unsubscribe();
-    this.isLoadingListSubscription?.unsubscribe();
-    this.isLoadingMapSubscription?.unsubscribe();
+    this.filtersFormChangedSubscription!.unsubscribe();
   }
 }

@@ -81,6 +81,8 @@ export class ObjectAddComponent {
   categories: string[] = Object.keys(ObjectCategory);
 
   private searchFormValueSubscription: Subscription | undefined;
+  private getAdressesSubscription: Subscription | undefined;
+  private getGeoDataSubscription: Subscription | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -158,7 +160,7 @@ export class ObjectAddComponent {
       this.searchValuePlaces = [];
       return;
     }
-    this.geoDataService
+    this.getAdressesSubscription = this.geoDataService
       .getAddresses(searchQuery)
       .subscribe((result: Address[]) => {
         this.searchValuePlaces = result;
@@ -226,7 +228,7 @@ export class ObjectAddComponent {
   }
 
   getLocationData(): void {
-    this.geoDataService
+    this.getGeoDataSubscription = this.geoDataService
       .getGeoData([this.coordinateLonLat[1], this.coordinateLonLat[0]])
       .subscribe(({ countryName, place }) => {
         this.country = countryName || 'unknown';
@@ -313,5 +315,7 @@ export class ObjectAddComponent {
 
   ngOnDestroy() {
     this.searchFormValueSubscription?.unsubscribe();
+    this.getAdressesSubscription?.unsubscribe();
+    this.getGeoDataSubscription?.unsubscribe();
   }
 }
