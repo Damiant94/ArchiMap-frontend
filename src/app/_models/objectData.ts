@@ -29,7 +29,6 @@ export enum ObjectCategory {
   CATHEDRAL = 'CATHEDRAL',
   APARTMENT = 'APARTMENT',
   COMPANY = 'COMPANY',
-  NATURE = 'NATURE',
   MONUMENT = 'MONUMENT',
   OTHER = 'OTHER',
 }

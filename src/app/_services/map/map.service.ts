@@ -175,8 +175,6 @@ export class MapService {
     switch (category) {
       case ObjectCategory.APARTMENT:
         return 'mapIcons/apartment.png';
-      case ObjectCategory.NATURE:
-        return 'mapIcons/nature.png';
       case ObjectCategory.CATHEDRAL:
         return 'mapIcons/cathedral.png';
       case ObjectCategory.MONUMENT:
