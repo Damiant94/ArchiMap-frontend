@@ -10,9 +10,8 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationType } from '../../_models/notifications';
 import { Filters } from '../../_models/filters';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +25,7 @@ export class ObjectsService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private notificationsService: NotificationsService
+    private notificationsService: ToastrService
   ) {}
 
   setFilters(filters: Filters) {
@@ -78,10 +77,7 @@ export class ObjectsService {
       .get<any>(`${environment.urlApi}/feed/get-object/${id}`)
       .pipe(
         catchError((error) => {
-          this.notificationsService.pushNotification(
-            "Coudn't find object",
-            NotificationType.WARN
-          );
+          this.notificationsService.error("Couldn't find object", 'error');
           return throwError(() => new Error(error));
         })
       );
@@ -96,10 +92,9 @@ export class ObjectsService {
     return this.http
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
       .subscribe(() => {
-        this.notificationsService.pushNotification(
+        this.notificationsService.success(
           'Thanks for sharing the object. Object is being modereted and will be added soon.',
-          NotificationType.INFO,
-          10000
+          'success'
         );
       });
   }

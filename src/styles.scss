@@ -13,9 +13,9 @@ body {
 }
 
 .ol-zoom {
-  top: 10px;
-  right: 10px;
-  left: auto;
+  top: 10px !important;
+  right: 10px !important;
+  left: auto !important;
 }
 
 .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {

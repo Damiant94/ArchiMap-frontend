@@ -4,7 +4,7 @@ import {
   ObjectData,
   ObjectDataMap,
 } from '../../_models/objectData';
-import { Subject, catchError, of } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
