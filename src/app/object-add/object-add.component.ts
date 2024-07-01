@@ -286,6 +286,14 @@ export class ObjectAddComponent {
     });
   }
 
+  get nameInput() {
+    return this.addObjectForm2stage.get("name")
+  }
+
+  get descriptionInput() {
+    return this.addObjectForm2stage.get("description")
+  }
+
   onSubmit(): void {
     const form1Value = this.addObjectForm1stage.value;
     const coordinate = [

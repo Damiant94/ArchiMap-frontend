@@ -108,8 +108,12 @@
               id="name"
               type="text"
               formControlName="name"
+              maxlength="25"
             />
             <mat-hint align="end">{{ name.value.length }}/25</mat-hint>
+            @if (nameInput?.hasError("required")) {
+              <mat-error>Name is required</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
@@ -121,8 +125,12 @@
               #description
               formControlName="description"
               rows="3"
+              maxlength="1000"
             ></textarea>
             <mat-hint align="end">{{ description.value.length }}/1000</mat-hint>
+            @if (descriptionInput?.hasError("required")) {
+              <mat-error>Description is required</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
