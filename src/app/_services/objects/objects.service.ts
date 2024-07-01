@@ -91,11 +91,19 @@ export class ObjectsService {
     this.router.navigate(['/']);
     return this.http
       .post<any>(`${environment.urlApi}/feed/add-object/`, objectData)
-      .subscribe(() => {
-        this.notificationsService.success(
-          'Thanks for sharing the object. Object is being modereted and will be added soon.',
-          'success'
-        );
+      .subscribe({
+        next: () => {
+          this.notificationsService.success(
+            'Thanks for sharing the object. Object is being modereted and will be added soon.',
+            'success'
+          );
+        },
+        error: () => {
+          this.notificationsService.error(
+            'Something went wrong.. Object was not added...',
+            'error'
+          );
+        }
       });
   }
 }
