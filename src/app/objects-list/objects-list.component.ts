@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ObjectsListElementComponent } from './objects-list-element/objects-list-element.component';
 import { ObjectsService } from '../_services/objects/objects.service';
 import { ObjectData } from '../_models/objectData';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
@@ -31,18 +31,19 @@ export class ObjectsListComponent {
         this.isLoadingList = false;
       },
     });
-    this.filtersChangedSubscription =
-      this.objectsService.filtersChangedSubject.subscribe({
-        next: () => {
+    this.filtersChangedSubscription = this.objectsService.filtersChangedSubject
+      .pipe(
+        switchMap(() => {
           this.isLoadingList = true;
           this.objectsService.resetPage();
-          this.objectsService.getObjects().subscribe({
-            next: (objects: ObjectData[]) => {
-              this.objects = objects;
-              this.isLoadingList = false;
-              this.isScrollFetchingBlocked = false;
-            },
-          });
+          return this.objectsService.getObjects();
+        })
+      )
+      .subscribe({
+        next: (objects: ObjectData[]) => {
+          this.objects = objects;
+          this.isLoadingList = false;
+          this.isScrollFetchingBlocked = false;
         },
       });
   }
