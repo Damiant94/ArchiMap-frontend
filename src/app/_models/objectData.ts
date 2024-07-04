@@ -2,15 +2,16 @@ export interface ObjectData {
   _id: string;
   name: string;
   description: string;
-  location: {
-    coordinateLonLat: number[];
-    country: string;
-    place: string;
-  };
+  location: Location;
   category: ObjectCategory;
-  username: string;
   imageUrl?: string;
-  status?: ObjectStatus
+  status?: ObjectStatus;
+}
+
+interface Location {
+  coordinateLonLat: number[];
+  country: string;
+  place: string;
 }
 
 export interface ObjectDataMap {
@@ -22,7 +23,7 @@ export interface ObjectDataMap {
 export enum ObjectStatus {
   NEW = 'NEW',
   REPORTED = 'REPORTED',
-  OK = 'OK'
+  OK = 'OK',
 }
 
 export enum ObjectCategory {

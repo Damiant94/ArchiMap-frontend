@@ -72,7 +72,6 @@ export class ObjectAddComponent {
   country: string | undefined;
   place: string | undefined;
   coordinateLonLat!: Coordinate;
-  private username: string | undefined;
 
   private map: Map | undefined;
   private vectorSource: VectorSource | undefined;
@@ -304,7 +303,6 @@ export class ObjectAddComponent {
     const form2RawValue = this.addObjectForm2stage.getRawValue();
     const newObject: ObjectData = {
       ...form2RawValue,
-      username: 'newuser',
       location: {
         ...form2RawValue.location,
         coordinateLonLat: coordinate,

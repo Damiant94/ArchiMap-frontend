@@ -91,6 +91,5 @@ export const mockObject: ObjectData = {
     coordinateLonLat: [0, 0],
     country: 'country',
     place: 'place',
-  },
-  username: 'username',
+  }
 };

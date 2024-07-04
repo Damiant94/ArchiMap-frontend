@@ -90,8 +90,7 @@ const mockObject: ObjectData = {
     coordinateLonLat: [0, 0],
     country: 'country',
     place: 'place',
-  },
-  username: 'username',
+  }
 };
 
 const mockObjects1: ObjectData[] = [mockObject, mockObject, mockObject];
