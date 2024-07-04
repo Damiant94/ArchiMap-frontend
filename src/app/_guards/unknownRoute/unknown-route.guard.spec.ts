@@ -1,14 +1,31 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 
 import { unknownRouteGuard } from './unknown-route.guard';
+import { ToastrService } from 'ngx-toastr';
 
 describe('unknownRouteGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => unknownRouteGuard(...guardParameters));
+  const executeGuard: CanActivateFn = (...guardParameters) =>
+    TestBed.runInInjectionContext(() => unknownRouteGuard(...guardParameters));
+
+  let routerMock: Router;
+  let toastrServiceMock: ToastrService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    routerMock = jasmine.createSpyObj<Router>('Router', {
+      navigate: undefined,
+    });
+
+    toastrServiceMock = jasmine.createSpyObj<ToastrService>('ToastrService', {
+      warning: undefined,
+    });
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Router, useValue: routerMock },
+        { provide: ToastrService, useValue: toastrServiceMock },
+      ],
+    });
   });
 
   it('should be created', () => {
