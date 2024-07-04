@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapPopupComponent } from './map-popup.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideToastr } from 'ngx-toastr';
 
 describe('MapPopupComponent', () => {
   let component: MapPopupComponent;
@@ -8,9 +11,13 @@ describe('MapPopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MapPopupComponent]
-    })
-    .compileComponents();
+      imports: [MapPopupComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideToastr(),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MapPopupComponent);
     component = fixture.componentInstance;
